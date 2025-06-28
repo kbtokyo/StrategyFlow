@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fly-Concorde Strategic Roadmap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .roadmap-container {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+        
+        .timeline {
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, #3498db, #2980b9, #27ae60, #16a085, #f39c12, #e67e22);
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        
+        .phase {
+            position: relative;
+            margin: 60px 0;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .phase:nth-child(1) { animation-delay: 0.2s; }
+        .phase:nth-child(2) { animation-delay: 0.4s; }
+        .phase:nth-child(3) { animation-delay: 0.6s; }
+        .phase:nth-child(4) { animation-delay: 0.8s; }
+        .phase:nth-child(5) { animation-delay: 1.0s; }
+        .phase:nth-child(6) { animation-delay: 1.2s; }
+        
+        .phase-marker {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            z-index: 2;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .phase-content {
+            width: 45%;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .phase-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .phase-content::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: white;
+            transform: translateY(-50%) rotate(45deg);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .phase-left .phase-content {
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        .phase-left .phase-content::before {
+            right: -10px;
+        }
+        
+        .phase-right .phase-content {
+            margin-left: auto;
+            margin-right: 0;
+        }
+        
+        .phase-right .phase-content::before {
+            left: -10px;
+        }
+        
+        .phase-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .phase-subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .objectives {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .objectives li {
+            margin: 12px 0;
+            padding: 10px 15px;
+            background: #ecf0f1;
+            border-radius: 8px;
+            border-left: 4px solid;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .objectives li:hover {
+            background: #d5dbdb;
+            transform: translateX(5px);
+        }
+        
+        .objectives li::before {
+            content: '✓';
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            color: #27ae60;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .metrics {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .metrics h4 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 0.95em;
+        }
+        
+        .metric-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        /* Phase-specific colors */
+        .phase-1 .phase-marker { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .phase-1 .objectives li { border-left-color: #3498db; }
+        
+        .phase-2 .phase-marker { background: linear-gradient(135deg, #2980b9, #1abc9c); }
+        .phase-2 .objectives li { border-left-color: #2980b9; }
+        
+        .phase-3 .phase-marker { background: linear-gradient(135deg, #27ae60, #16a085); }
+        .phase-3 .objectives li { border-left-color: #27ae60; }
+        
+        .phase-4 .phase-marker { background: linear-gradient(135deg, #16a085, #f39c12); }
+        .phase-4 .objectives li { border-left-color: #16a085; }
+        
+        .phase-5 .phase-marker { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .phase-5 .objectives li { border-left-color: #f39c12; }
+        
+        .phase-6 .phase-marker { background: linear-gradient(135deg, #e67e22, #d35400); }
+        .phase-6 .objectives li { border-left-color: #e67e22; }
+        
+        .summary {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 40px;
+            margin-top: 40px;
+            border-radius: 15px;
+        }
+        
+        .summary h3 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .summary-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .summary-item h4 {
+            color: #3498db;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .phase-content {
+                width: calc(100% - 60px);
+                margin-left: 60px !important;
+                margin-right: 0 !important;
+            }
+            
+            .phase-content::before {
+                left: -10px !important;
+                right: auto !important;
+            }
+            
+            .phase-marker {
+                left: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Fly-Concorde Strategic Roadmap</h1>
+            <p>From Fintech Startup to Global Supersonic Aviation Leader | 2025-2035</p>
+        </div>
+        
+        <div class="roadmap-container">
+            <div class="timeline">
+                
+                <!-- Phase 1: Foundation (2025) -->
+                <div class="phase phase-1 phase-left">
+                    <div class="phase-marker">1</div>
+                    <div class="phase-content">
+                        <div class="phase-title">Foundation Phase</div>
+                        <div class="phase-subtitle">2025 | Establishing Market Presence</div>
+                        
+                        <ul class="objectives">
+                            <li>Launch Concorde Coin ETF ($500M target)</li>
+                            <li>Secure 5 strategic manufacturing partnerships</li>
+                            <li>Establish legal entities in Japan, Italy, Seattle</li>
+                            <li>Build UHNW prospect database (10,000 contacts)</li>
+                            <li>Hire core leadership team (CEO, CTO, CFO)</li>
+                            <li>Develop proprietary blockchain infrastructure</li>
+                            <li>Obtain initial regulatory approvals</li>
+                        </ul>
+                        
+                        <div class="metrics">
+                            <h4>Key Metrics</h4>
+                            <div class="metric-item">
+                                <span>ETF Target</span>
+                                <span class="metric-value">$500M</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Strategic Partners</span>
+                                <span class="metric-value">5</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Team Size</span>
+                                <span class="metric-value">25 people</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Countries Active</span>
+                                <span class="metric-value">3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Phase 2: Development (2026) -->
+                <div class="phase phase-2 phase-right">
+                    <div class="phase-marker">2</div>
+                    <div class="phase-content">
+                        <div class="phase-title">Development Phase</div>
+                        <div class="phase-subtitle">2026 | Building Core Capabilities</div>
+                        
+                        <ul class="objectives">
+                            <li>Assemble first modernized Concorde aircraft</li>
+                            <li>Launch Founder's Circle memberships (5,000 members)</li>
+                            <li>Complete hangar/assembly facility setup</li>
+                            <li>Hire engineering team (100+ aerospace engineers)</li>
+                            <li>Begin certification testing program</li>
+                            <li>Establish ground services partnerships</li>
+                            <li>Develop luxury passenger experience standards</li>
+                        </ul>
+                        
+                        <div class="metrics">
+                            <h4>Key Metrics</h4>
+                            <div class="metric-item">
+                                <span>Aircraft Assembled</span>
+                                <span class="metric-value">1</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Founder Members</span>
+                                <span class="metric-value">5,000</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Team Size</span>
+                                <span class="metric-value">150 people</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Facilities</span>
+                                <span class="metric-value">3 locations</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Phase 3: Testing (2027) -->
+                <div class="phase phase-3 phase-left">
+                    <div class="phase-marker">3</div>
+                    <div class="phase-content">
+                        <div class="phase-title">Testing & Certification</div>
+                        <div class="phase-subtitle">2027 | Proving Safety & Performance</div>
+                        
+                        <ul class="objectives">
+                            <li>Assemble 3 additional Concorde aircraft</li>
+                            <li>Complete 200 certification flights</li>
+                            <li>Obtain airworthiness certificates (Japan, Italy, US)</li>
+                            <li>Train first cohort of pilots (50 pilots)</li>
+                            <li>Establish route planning and operations systems</li>
+                            <li>Complete environmental impact assessments</li>
+                            <li>Launch pre-booking for inaugural flights</li>
+                        </ul>
+                        
+                        <div class="metrics">
+                            <h4>Key Metrics</h4>
+                            <div class="metric-item">
+                                <span>Total Aircraft</span>
+                                <span class="metric-value">4</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Test Flights</span>
+                                <span class="metric-value">200</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Certified Pilots</span>
+                                <span class="metric-value">50</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Pre-bookings</span>
+                                <span class="metric-value">$100M</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Phase 4: Launch (2028) -->
+                <div class="phase phase-4 phase-right">
+                    <div class="phase-marker">4</div>
+                    <div class="phase-content">
+                        <div class="phase-title">Commercial Launch</div>
+                        <div class="phase-subtitle">2028 | First Commercial Operations</div>
+                        
+                        <ul class="objectives">
+                            <li>Launch Tokyo-London-Italy-Edmonton-Seattle route</li>
+                            <li>Complete inaugural "Round the World" flights</li>
+                            <li>Begin production of 3 aircraft per month</li>
+                            <li>Achieve 50 countries Concorde Coin acceptance</li>
+                            <li>IPO preparation for Concorde Coin ETF</li>
+                            <li>Establish luxury ground services at all hubs</li>
+                            <li>Launch corporate executive travel program</li>
+                        </ul>
+                        
+                        <div class="metrics">
+                            <h4>Key Metrics</h4>
+                            <div class="metric-item">
+                                <span>Active Routes</span>
+                                <span class="metric-value">5 cities</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Monthly Production</span>
+                                <span class="metric-value">3 aircraft</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Annual Passengers</span>
+                                <span class="metric-value">2,000</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Revenue</span>
+                                <span class="metric-value">$150M</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Phase 5: Scale (2030) -->
+                <div class="phase phase-5 phase-left">
+                    <div class="phase-marker">5</div>
+                    <div class="phase-content">
+                        <div class="phase-title">Scale Operations</div>
+                        <div class="phase-subtitle">2030 | Global Network Expansion</div>
+                        
+                        <ul class="objectives">
+                            <li>Operate 108 commercial aircraft globally</li>
+                            <li>Expand to 15 international destinations</li>
+                            <li>Complete larger supersonic aircraft R&D</li>
+                            <li>Achieve 10,000 annual passengers</li>
+                            <li>Launch secondary route networks</li>
+                            <li>Establish maintenance and service centers</li>
+                            <li>Develop next-generation sustainability features</li>
+                        </ul>
+                        
+                        <div class="metrics">
+                            <h4>Key Metrics</h4>
+                            <div class="metric-item">
+                                <span>Fleet Size</span>
+                                <span class="metric-value">108 aircraft</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Destinations</span>
+                                <span class="metric-value">15 cities</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Annual Passengers</span>
+                                <span class="metric-value">10,000</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Revenue</span>
+                                <span class="metric-value">$500M</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Phase 6: Innovation (2035) -->
+                <div class="phase phase-6 phase-right">
+                    <div class="phase-marker">6</div>
+                    <div class="phase-content">
+                        <div class="phase-title">Innovation Leadership</div>
+                        <div class="phase-subtitle">2035 | Next-Generation Aviation</div>
+                        
+                        <ul class="objectives">
+                            <li>Produce 36 larger aircraft annually for partners</li>
+                            <li>Launch 200-passenger supersonic aircraft</li>
+                            <li>Establish technology licensing program</li>
+                            <li>Achieve carbon-neutral flight operations</li>
+                            <li>Expand to 25+ global destinations</li>
+                            <li>Lead industry in sustainable aviation</li>
+                            <li>Mentor next generation of aerospace innovators</li>
+                        </ul>
+                        
+                        <div class="metrics">
+                            <h4>Key Metrics</h4>
+                            <div class="metric-item">
+                                <span>OEM Production</span>
+                                <span class="metric-value">36/year</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Passenger Capacity</span>
+                                <span class="metric-value">200 seats</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Global Destinations</span>
+                                <span class="metric-value">25+ cities</span>
+                            </div>
+                            <div class="metric-item">
+                                <span>Market Cap</span>
+                                <span class="metric-value">$10B+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="summary">
+                <h3>Strategic Success Milestones</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <h4>Financial Growth</h4>
+                        <p>From $500M ETF launch to $10B+ market capitalization, establishing Concorde Coin as the premier aviation cryptocurrency with global acceptance.</p>
+                    </div>
+                    <div class="summary-item">
+                        <h4>Operational Excellence</h4>
+                        <p>Build from single prototype to 108+ aircraft fleet, serving 25+ global destinations with industry-leading safety and luxury standards.</p>
+                    </div>
+                    <div class="summary-item">
+                        <h4>Technology Leadership</h4>
+                        <p>Pioneer sustainable supersonic aviation, developing next-generation aircraft and licensing technology to major aviation partners worldwide.</p>
+                    </div>
+                    <div class="summary-item">
+                        <h4>Global Impact</h4>
+                        <p>Revive the Concorde legacy while promoting international cooperation, sustainable aviation, and connecting the world through innovative travel experiences.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
