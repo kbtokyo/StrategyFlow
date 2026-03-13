@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fly-Concorde | Market Sizing: TAM, SAM & SOM</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 40px 30px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -40px; left: -40px;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.03);
+        }
+        .header-badge {
+            display: inline-block;
+            background: rgba(52,152,219,0.3);
+            border: 1px solid rgba(52,152,219,0.6);
+            color: #74b9ff;
+            font-size: 0.75em;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 5px 16px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+        }
+        .header h1 {
+            font-size: 2.8em;
+            font-weight: 300;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+        .header h1 span { font-weight: 700; color: #74b9ff; }
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ── HERO CIRCLES ── */
+        .circles-section {
+            background: #f8f9fa;
+            padding: 50px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .circles-section h2 {
+            color: #2c3e50;
+            font-size: 1.6em;
+            font-weight: 300;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .circles-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+        }
+        .circle-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        .circle-outer {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .circle {
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: pulseIn 0.8s ease forwards;
+            opacity: 0;
+        }
+        .circle:hover {
+            transform: scale(1.06);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+        }
+        .circle.tam {
+            width: 240px; height: 240px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            animation-delay: 0.1s;
+        }
+        .circle.sam {
+            width: 190px; height: 190px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            animation-delay: 0.3s;
+        }
+        .circle.som {
+            width: 140px; height: 140px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            animation-delay: 0.5s;
+        }
+        .circle-label {
+            font-size: 1.5em;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .circle-sublabel {
+            font-size: 0.65em;
+            opacity: 0.9;
+            margin-top: 4px;
+            padding: 0 12px;
+            line-height: 1.3;
+        }
+        .circle-value {
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-top: 6px;
+            background: rgba(255,255,255,0.25);
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+        .arrow-connector {
+            font-size: 2em;
+            color: #bdc3c7;
+            padding: 0 10px;
+            flex-shrink: 0;
+        }
+        @keyframes pulseIn {
+            from { opacity: 0; transform: scale(0.7); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        /* ── TABS ── */
+        .tabs-section {
+            padding: 40px 30px;
+        }
+        .tabs-section h2 {
+            color: #2c3e50;
+            font-size: 1.6em;
+            font-weight: 300;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .tab-btn {
+            padding: 10px 22px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            color: #7f8c8d;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .tab-btn:hover { border-color: #3498db; color: #3498db; }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 12px rgba(52,152,219,0.35);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeSlideIn 0.35s ease; }
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── CATEGORY CARDS ── */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .card {
+            border-radius: 14px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+        }
+        .card.tam-card  { background: linear-gradient(135deg, #ebf5fb, #d6eaf8); border-left: 4px solid #3498db; }
+        .card.sam-card  { background: linear-gradient(135deg, #f5eef8, #e8daef); border-left: 4px solid #9b59b6; }
+        .card.som-card  { background: linear-gradient(135deg, #eafaf1, #d5f5e3); border-left: 4px solid #27ae60; }
+        .card-badge {
+            display: inline-block;
+            color: white;
+            font-size: 0.7em;
+            font-weight: 800;
+            letter-spacing: 1px;
+            padding: 3px 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+        .tam-card .card-badge { background: #3498db; }
+        .sam-card .card-badge { background: #9b59b6; }
+        .som-card .card-badge { background: #27ae60; }
+        .card h3 { font-size: 1em; color: #2c3e50; margin-bottom: 10px; font-weight: 700; }
+        .card ul { padding-left: 16px; }
+        .card ul li { color: #4a4a4a; font-size: 0.88em; line-height: 1.7; }
+
+        /* ── RISK CARDS ── */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .risk-card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            border: 1px solid #f0f0f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            transition: transform 0.3s;
+        }
+        .risk-card:hover { transform: translateY(-4px); }
+        .risk-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .risk-card h3 { font-size: 0.95em; color: #2c3e50; font-weight: 700; margin-bottom: 8px; }
+        .risk-card p { font-size: 0.85em; color: #666; line-height: 1.6; }
+        .risk-tag {
+            display: inline-block;
+            font-size: 0.7em;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .risk-tag.tam-risk { background: #d6eaf8; color: #2980b9; }
+        .risk-tag.sam-risk { background: #e8daef; color: #8e44ad; }
+        .risk-tag.som-risk { background: #d5f5e3; color: #27ae60; }
+
+        /* ── EXAMPLES TABLE ── */
+        .examples-wrapper { overflow-x: auto; }
+        .examples-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        .examples-table th {
+            padding: 14px 18px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.8em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .examples-table th:first-child { background: #2c3e50; color: white; border-radius: 10px 0 0 0; }
+        .examples-table th.tam-th { background: #3498db; color: white; }
+        .examples-table th.sam-th { background: #9b59b6; color: white; }
+        .examples-table th.som-th { background: #27ae60; color: white; border-radius: 0 10px 0 0; }
+        .examples-table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+        .examples-table tr:last-child td { border-bottom: none; }
+        .examples-table tr:hover td { background: #fafbfc; }
+        .examples-table td:first-child { font-weight: 700; color: #2c3e50; }
+        .examples-table td.tam-td { color: #2980b9; font-weight: 600; }
+        .examples-table td.sam-td { color: #8e44ad; font-weight: 600; }
+        .examples-table td.som-td { color: #27ae60; font-weight: 600; }
+        .value-chip {
+            display: inline-block;
+            background: #ecf0f1;
+            border-radius: 8px;
+            padding: 2px 8px;
+            font-size: 0.85em;
+            font-weight: 800;
+        }
+        .tam-td .value-chip { background: #d6eaf8; color: #1a5276; }
+        .sam-td .value-chip { background: #e8daef; color: #6c3483; }
+        .som-td .value-chip { background: #d5f5e3; color: #1e8449; }
+
+        /* ── CONCORDE MARKET SECTION ── */
+        .concorde-section {
+            margin: 0 30px 30px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 16px;
+            padding: 36px;
+            color: white;
+        }
+        .concorde-section h2 {
+            font-size: 1.5em;
+            font-weight: 300;
+            margin-bottom: 8px;
+        }
+        .concorde-section h2 span { font-weight: 700; color: #74b9ff; }
+        .concorde-section p.subtitle {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+        .concorde-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .metric-card {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px;
+            padding: 22px;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        .metric-card:hover { background: rgba(255,255,255,0.13); }
+        .metric-label {
+            font-size: 0.65em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.6;
+            margin-bottom: 6px;
+        }
+        .metric-badge {
+            display: inline-block;
+            font-size: 0.7em;
+            font-weight: 800;
+            letter-spacing: 1px;
+            padding: 3px 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        .metric-badge.tam { background: rgba(52,152,219,0.4); color: #74b9ff; }
+        .metric-badge.sam { background: rgba(155,89,182,0.4); color: #d98ef0; }
+        .metric-badge.som { background: rgba(39,174,96,0.4); color: #6ddfa0; }
+        .metric-value {
+            font-size: 2.2em;
+            font-weight: 800;
+            margin: 6px 0;
+            line-height: 1;
+        }
+        .metric-card.tam-m  .metric-value { color: #74b9ff; }
+        .metric-card.sam-m  .metric-value { color: #d98ef0; }
+        .metric-card.som-m  .metric-value { color: #6ddfa0; }
+        .metric-desc {
+            font-size: 0.8em;
+            opacity: 0.7;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+        .concorde-funnel {
+            margin-top: 26px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+        .funnel-bar {
+            height: 8px;
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+        .funnel-bar.f-tam { background: #3498db; width: 100%; }
+        .funnel-bar.f-sam { background: #9b59b6; width: 46%; }
+        .funnel-bar.f-som { background: #27ae60; width: 15%; }
+        .funnel-row { flex: 1; }
+        .funnel-text { white-space: nowrap; font-size: 0.8em; opacity: 0.7; }
+
+        /* ── ESTIMATION STEPS ── */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .step-card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            border: 1px solid #e8e8e8;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .step-number {
+            position: absolute;
+            top: -14px; left: 20px;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.85em; color: white;
+        }
+        .step-number.tam-n { background: #3498db; }
+        .step-number.sam-n { background: #9b59b6; }
+        .step-number.som-n { background: #27ae60; }
+        .step-card h3 { font-size: 0.95em; color: #2c3e50; font-weight: 700; margin-bottom: 10px; margin-top: 6px; }
+        .step-card ul { padding-left: 16px; }
+        .step-card ul li { font-size: 0.85em; color: #555; line-height: 1.7; }
+
+        /* ── WHEN TO USE ── */
+        .use-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .use-card {
+            border-radius: 14px;
+            padding: 24px;
+            transition: transform 0.3s;
+        }
+        .use-card:hover { transform: translateY(-4px); }
+        .use-card.tam-u { background: linear-gradient(135deg, #ebf5fb, #d6eaf8); }
+        .use-card.sam-u { background: linear-gradient(135deg, #f5eef8, #e8daef); }
+        .use-card.som-u { background: linear-gradient(135deg, #eafaf1, #d5f5e3); }
+        .use-icon { font-size: 2em; margin-bottom: 10px; }
+        .use-card h3 { font-size: 0.95em; color: #2c3e50; font-weight: 700; margin-bottom: 10px; }
+        .use-card ul { padding-left: 16px; }
+        .use-card ul li { font-size: 0.85em; color: #4a4a4a; line-height: 1.7; }
+
+        /* ── TOOLTIP ── */
+        .tooltip-box {
+            position: fixed;
+            background: rgba(0,0,0,0.88);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.82em;
+            pointer-events: none;
+            z-index: 9999;
+            max-width: 220px;
+            line-height: 1.5;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #95a5a6;
+            font-size: 0.82em;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 800px) {
+            .cards-grid, .risk-grid, .concorde-metrics,
+            .steps-grid, .use-grid { grid-template-columns: 1fr; }
+            .circle.tam { width: 180px; height: 180px; }
+            .circle.sam { width: 140px; height: 140px; }
+            .circle.som { width: 100px; height: 100px; }
+            .header h1 { font-size: 2em; }
+            .arrow-connector { font-size: 1.4em; padding: 0 4px; }
+        }
+
+        /* ── COUNTER ANIMATION ── */
+        .counter { display: inline; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-badge">Market Sizing Framework</div>
+        <h1>TAM · <span>SAM</span> · SOM</h1>
+        <p>Understanding Market Sizes — from total opportunity to realistic capture</p>
+    </div>
+
+    <!-- NESTED CIRCLES HERO -->
+    <div class="circles-section">
+        <h2>Market Size at a Glance</h2>
+        <div class="circles-wrapper">
+
+            <div class="circle-block">
+                <div class="circle-outer">
+                    <div class="circle tam"
+                         data-tooltip="Total Addressable Market — the full global revenue opportunity if you captured 100% of the market.">
+                        <div class="circle-label">TAM</div>
+                        <div class="circle-sublabel">Total Addressable Market</div>
+                        <div class="circle-value">100% market</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow-connector">⊃</div>
+
+            <div class="circle-block">
+                <div class="circle-outer">
+                    <div class="circle sam"
+                         data-tooltip="Serviceable Addressable Market — the portion of TAM you can realistically reach based on geography, tech, and regulation.">
+                        <div class="circle-label">SAM</div>
+                        <div class="circle-sublabel">Serviceable Addressable Market</div>
+                        <div class="circle-value">Reachable slice</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow-connector">⊃</div>
+
+            <div class="circle-block">
+                <div class="circle-outer">
+                    <div class="circle som"
+                         data-tooltip="Serviceable Obtainable Market — the share you can realistically win with your current team, product, and resources.">
+                        <div class="circle-label">SOM</div>
+                        <div class="circle-sublabel">Serviceable Obtainable Market</div>
+                        <div class="circle-value">Winnable now</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TABS SECTION -->
+    <div class="tabs-section">
+        <h2>Explore the Framework</h2>
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="definition">Definition</button>
+            <button class="tab-btn" data-tab="purpose">Purpose</button>
+            <button class="tab-btn" data-tab="estimate">How to Estimate</button>
+            <button class="tab-btn" data-tab="when">When to Use</button>
+            <button class="tab-btn" data-tab="risks">Biggest Risks</button>
+            <button class="tab-btn" data-tab="examples">Examples</button>
+        </div>
+
+        <!-- DEFINITION -->
+        <div class="tab-content active" id="tab-definition">
+            <div class="cards-grid">
+                <div class="card tam-card">
+                    <div class="card-badge">TAM</div>
+                    <h3>Total Addressable Market</h3>
+                    <ul>
+                        <li>Full potential market size</li>
+                        <li>Assumes 100% market share</li>
+                        <li>Broadest view of the opportunity</li>
+                        <li>Includes all geographies, segments &amp; use-cases</li>
+                        <li>No constraints on reach or execution</li>
+                    </ul>
+                </div>
+                <div class="card sam-card">
+                    <div class="card-badge">SAM</div>
+                    <h3>Serviceable Addressable Market</h3>
+                    <ul>
+                        <li>The portion of TAM you can actually reach</li>
+                        <li>Filtered by geography &amp; tech capability</li>
+                        <li>Accounts for regulatory constraints</li>
+                        <li>Removes customers you cannot serve today</li>
+                        <li>Defines your realistic competitive arena</li>
+                    </ul>
+                </div>
+                <div class="card som-card">
+                    <div class="card-badge">SOM</div>
+                    <h3>Serviceable Obtainable Market</h3>
+                    <ul>
+                        <li>The share you can realistically win</li>
+                        <li>Based on current traction &amp; resources</li>
+                        <li>Factors in competitor landscape</li>
+                        <li>Grounded in conversion rate estimates</li>
+                        <li>Drives near-term revenue forecasts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- PURPOSE -->
+        <div class="tab-content" id="tab-purpose">
+            <div class="cards-grid">
+                <div class="card tam-card">
+                    <div class="card-badge">TAM</div>
+                    <h3>Why Calculate TAM?</h3>
+                    <ul>
+                        <li>Show big opportunity to investors</li>
+                        <li>Understand the long-term ceiling</li>
+                        <li>Evaluate if a market is worth entering</li>
+                        <li>Set long-term strategic ambition</li>
+                        <li>Justify R&amp;D and infrastructure spend</li>
+                    </ul>
+                </div>
+                <div class="card sam-card">
+                    <div class="card-badge">SAM</div>
+                    <h3>Why Calculate SAM?</h3>
+                    <ul>
+                        <li>Set practical growth goals</li>
+                        <li>Plan go-to-market or expansion strategy</li>
+                        <li>Show limits honestly to investors</li>
+                        <li>Prioritise which segments to target first</li>
+                        <li>Align stakeholders on medium-term potential</li>
+                    </ul>
+                </div>
+                <div class="card som-card">
+                    <div class="card-badge">SOM</div>
+                    <h3>Why Calculate SOM?</h3>
+                    <ul>
+                        <li>Plan hiring and resourcing decisions</li>
+                        <li>Set realistic revenue targets</li>
+                        <li>Track achievable growth milestones</li>
+                        <li>Build credible sales forecasts</li>
+                        <li>Align team budget planning</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- HOW TO ESTIMATE -->
+        <div class="tab-content" id="tab-estimate">
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number tam-n">1</div>
+                    <h3>Estimating TAM</h3>
+                    <ul>
+                        <li>Identify <em>all</em> potential customers globally</li>
+                        <li>Multiply by average annual spend or price</li>
+                        <li>Use top-down: find industry research reports</li>
+                        <li>Or bottom-up: count all possible buyers × ARPU</li>
+                        <li>Validate with analyst data (Gartner, IDC, etc.)</li>
+                    </ul>
+                </div>
+                <div class="step-card">
+                    <div class="step-number sam-n">2</div>
+                    <h3>Estimating SAM</h3>
+                    <ul>
+                        <li>Start from TAM</li>
+                        <li>Remove unreachable users (language, regulation)</li>
+                        <li>Filter by geographies you can operate in</li>
+                        <li>Factor in pricing — remove those who can't afford it</li>
+                        <li>Consider what you can truly support today</li>
+                    </ul>
+                </div>
+                <div class="step-card">
+                    <div class="step-number som-n">3</div>
+                    <h3>Estimating SOM</h3>
+                    <ul>
+                        <li>Look at current growth rate &amp; trajectory</li>
+                        <li>Estimate conversion from your target audience</li>
+                        <li>Factor in competitive landscape &amp; win rate</li>
+                        <li>Use historical sales data where available</li>
+                        <li>Apply 3–5 year capture horizon realistically</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- WHEN TO USE -->
+        <div class="tab-content" id="tab-when">
+            <div class="use-grid">
+                <div class="use-card tam-u">
+                    <div class="use-icon">📊</div>
+                    <h3>Use TAM when…</h3>
+                    <ul>
+                        <li>Pitching in investor decks (Series A+)</li>
+                        <li>Doing product visioning &amp; roadmapping</li>
+                        <li>Forming a long-term market strategy</li>
+                        <li>Evaluating new verticals to enter</li>
+                        <li>Communicating mission scope to the board</li>
+                    </ul>
+                </div>
+                <div class="use-card sam-u">
+                    <div class="use-icon">🎯</div>
+                    <h3>Use SAM when…</h3>
+                    <ul>
+                        <li>Aligning stakeholders on short/medium term potential</li>
+                        <li>Planning go-to-market launch strategy</li>
+                        <li>Building 18–36 month growth plans</li>
+                        <li>Identifying which customer segments to focus on</li>
+                        <li>Comparing competitive positioning</li>
+                    </ul>
+                </div>
+                <div class="use-card som-u">
+                    <div class="use-icon">🏆</div>
+                    <h3>Use SOM when…</h3>
+                    <ul>
+                        <li>Building quarterly OKRs or sales plans</li>
+                        <li>Creating sales/revenue forecasts</li>
+                        <li>Aligning team and budget planning</li>
+                        <li>Reporting to investors on near-term milestones</li>
+                        <li>Setting hiring headcount targets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- BIGGEST RISKS -->
+        <div class="tab-content" id="tab-risks">
+            <div class="risk-grid">
+                <div class="risk-card">
+                    <div class="risk-tag tam-risk">TAM Risk 1</div>
+                    <div class="risk-icon">📈</div>
+                    <h3>Using Inflated or Outdated Stats</h3>
+                    <p>Relying on stale market reports or cherry-picking the largest figure makes TAM look bigger than it is, eroding investor trust.</p>
+                </div>
+                <div class="risk-card">
+                    <div class="risk-tag tam-risk">TAM Risk 2</div>
+                    <div class="risk-icon">⚠️</div>
+                    <h3>Ignoring Future Saturation</h3>
+                    <p>Markets mature and get disrupted. A static TAM ignores shrinkage from regulation, technology shifts, or saturation over time.</p>
+                </div>
+                <div class="risk-card">
+                    <div class="risk-tag sam-risk">SAM Risk 1</div>
+                    <div class="risk-icon">🌍</div>
+                    <h3>Underestimating Localisation Barriers</h3>
+                    <p>Language, culture, compliance, and payment infrastructure often reduce SAM dramatically — especially for cross-border products.</p>
+                </div>
+                <div class="risk-card">
+                    <div class="risk-tag sam-risk">SAM Risk 2</div>
+                    <div class="risk-icon">🔮</div>
+                    <h3>Overpromising Potential</h3>
+                    <p>Assuming you can reach all customers in a geography ignores distribution gaps, brand awareness, and operational constraints.</p>
+                </div>
+                <div class="risk-card">
+                    <div class="risk-tag som-risk">SOM Risk 1</div>
+                    <div class="risk-icon">🏎️</div>
+                    <h3>Overestimating Short-Term Ability</h3>
+                    <p>New ventures often lack the sales capacity, brand trust, and distribution to capture as much SOM as projected in Year 1–2.</p>
+                </div>
+                <div class="risk-card">
+                    <div class="risk-tag som-risk">SOM Risk 2</div>
+                    <div class="risk-icon">🔄</div>
+                    <h3>Ignoring Churn &amp; Switching Friction</h3>
+                    <p>Winning customers is only half the battle. High churn or low retention can mean SOM shrinks even as you acquire new users.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXAMPLES -->
+        <div class="tab-content" id="tab-examples">
+            <div class="examples-wrapper">
+                <table class="examples-table">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th class="tam-th">TAM — Total Market</th>
+                            <th class="sam-th">SAM — Serviceable Slice</th>
+                            <th class="som-th">SOM — Winnable Share</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Netflix</td>
+                            <td class="tam-td">Global entertainment spend<br><span class="value-chip">$300B</span></td>
+                            <td class="sam-td">Countries with fast enough broadband<br><span class="value-chip">$70B</span></td>
+                            <td class="som-td">Expected market after scaling<br><span class="value-chip">$50B</span></td>
+                        </tr>
+                        <tr>
+                            <td>Uber</td>
+                            <td class="tam-td">All transportation globally<br><span class="value-chip">$5.7T</span></td>
+                            <td class="sam-td">Legal ridesharing cities<br><span class="value-chip">$1.5T</span></td>
+                            <td class="som-td">Capturable market in 5 years<br><span class="value-chip">$150B</span></td>
+                        </tr>
+                        <tr>
+                            <td>Zoom</td>
+                            <td class="tam-td">All business communication tools<br><span class="value-chip">$64B</span></td>
+                            <td class="sam-td">Companies needing video conferencing<br><span class="value-chip">$25B</span></td>
+                            <td class="som-td">300K customers × $10K ARR<br><span class="value-chip">$10B</span></td>
+                        </tr>
+                        <tr>
+                            <td>Startup (Generic)</td>
+                            <td class="tam-td">Everyone with a smartphone</td>
+                            <td class="sam-td">English-speaking users with budget</td>
+                            <td class="som-td">Year 3 users within reach</td>
+                        </tr>
+                        <tr>
+                            <td>Coffee Shop</td>
+                            <td class="tam-td">All coffee drinkers globally<br><span class="value-chip">$450B</span></td>
+                            <td class="sam-td">Urban coffee buyers in shippable areas<br><span class="value-chip">$45B</span></td>
+                            <td class="som-td">3 major cities<br><span class="value-chip">$10M</span></td>
+                        </tr>
+                        <tr>
+                            <td style="color:#74b9ff; font-style:italic;">✈ Fly-Concorde</td>
+                            <td class="tam-td">Global ultra-luxury travel + private aviation<br><span class="value-chip">$850B</span></td>
+                            <td class="sam-td">UHNW passengers on approved supersonic routes<br><span class="value-chip">$390B</span></td>
+                            <td class="som-td">Phase 1–3 bookings + Founder's Circle<br><span class="value-chip">$2.5B</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div><!-- /tabs-section -->
+
+    <!-- FLY-CONCORDE MARKET SIZING SPOTLIGHT -->
+    <div class="concorde-section">
+        <h2>✈ <span>Fly-Concorde</span> Market Sizing</h2>
+        <p class="subtitle">Applying the TAM · SAM · SOM framework to our supersonic luxury venture</p>
+
+        <div class="concorde-metrics">
+
+            <div class="metric-card tam-m">
+                <div class="metric-label">Total Market</div>
+                <div class="metric-badge tam">TAM</div>
+                <div class="metric-value" data-target="850" data-suffix="B">$0B</div>
+                <div class="metric-desc">Global ultra-luxury travel, private aviation, and premium fintech services for HNW &amp; UHNW individuals worldwide.</div>
+            </div>
+
+            <div class="metric-card sam-m">
+                <div class="metric-label">Serviceable Market</div>
+                <div class="metric-badge sam">SAM</div>
+                <div class="metric-value" data-target="390" data-suffix="B">$0B</div>
+                <div class="metric-desc">UHNW passengers on approved supersonic corridors (transatlantic + transpacific) where Concorde Coin integration is feasible.</div>
+            </div>
+
+            <div class="metric-card som-m">
+                <div class="metric-label">Obtainable Market</div>
+                <div class="metric-badge som">SOM</div>
+                <div class="metric-value" data-target="2.5" data-suffix="B">$0B</div>
+                <div class="metric-desc">Phase 1–3 revenue from 5,000 Founder's Circle members, Lombard Credit Services, and early commercial routes (2025–2028).</div>
+            </div>
+
+        </div>
+
+        <div style="margin-top: 28px;">
+            <div style="font-size: 0.75em; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Market Funnel</div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; font-size: 0.75em; opacity: 0.6;">TAM</div>
+                    <div style="flex: 1; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; height: 10px;">
+                        <div class="funnel-bar f-tam" style="height: 100%; width: 0;" data-width="100%"></div>
+                    </div>
+                    <div style="font-size: 0.8em; opacity: 0.7; width: 50px; text-align: right;">$850B</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; font-size: 0.75em; opacity: 0.6;">SAM</div>
+                    <div style="flex: 1; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; height: 10px;">
+                        <div class="funnel-bar f-sam" style="height: 100%; width: 0;" data-width="46%"></div>
+                    </div>
+                    <div style="font-size: 0.8em; opacity: 0.7; width: 50px; text-align: right;">$390B</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 40px; font-size: 0.75em; opacity: 0.6;">SOM</div>
+                    <div style="flex: 1; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; height: 10px;">
+                        <div class="funnel-bar f-som" style="height: 100%; width: 0;" data-width="0.3%"></div>
+                    </div>
+                    <div style="font-size: 0.8em; opacity: 0.7; width: 50px; text-align: right;">$2.5B</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        Fly-Concorde Strategic Planning Suite &nbsp;·&nbsp; TAM / SAM / SOM Framework &nbsp;·&nbsp; 2025
+    </div>
+
+</div><!-- /container -->
+
+<!-- TOOLTIP -->
+<div class="tooltip-box" id="tooltip"></div>
+
+<script>
+    /* ── TABS ── */
+    const tabBtns  = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabPanes.forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    /* ── TOOLTIP ── */
+    const tooltip = document.getElementById('tooltip');
+    document.querySelectorAll('[data-tooltip]').forEach(el => {
+        el.addEventListener('mouseenter', e => {
+            tooltip.textContent = e.currentTarget.getAttribute('data-tooltip');
+            tooltip.style.display = 'block';
+        });
+        el.addEventListener('mousemove', e => {
+            tooltip.style.left = (e.clientX + 14) + 'px';
+            tooltip.style.top  = (e.clientY - 44) + 'px';
+        });
+        el.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+    });
+
+    /* ── COUNTER ANIMATION ── */
+    function animateCounter(el) {
+        const target = parseFloat(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        const duration = 1200;
+        const start = performance.now();
+        const isDecimal = target < 10;
+
+        function update(now) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const value = target * eased;
+            el.textContent = '$' + (isDecimal ? value.toFixed(1) : Math.round(value)) + suffix;
+            if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+    }
+
+    /* ── FUNNEL BAR ANIMATION ── */
+    function animateFunnelBars() {
+        document.querySelectorAll('.funnel-bar[data-width]').forEach(bar => {
+            bar.style.transition = 'width 1.2s ease';
+            bar.style.width = bar.dataset.width;
+        });
+    }
+
+    /* ── INTERSECTION OBSERVER for counter + funnel ── */
+    const concordeSection = document.querySelector('.concorde-section');
+    let countersStarted = false;
+
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !countersStarted) {
+                countersStarted = true;
+                document.querySelectorAll('.metric-value[data-target]').forEach(animateCounter);
+                animateFunnelBars();
+            }
+        });
+    }, { threshold: 0.3 });
+
+    obs.observe(concordeSection);
+</script>
+</body>
+</html>
