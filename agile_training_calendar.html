@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fly-Concorde Agile Training Calendar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        /* ── Header ── */
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 36px 40px 28px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.6em;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.85;
+        }
+
+        /* ── Legend ── */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        /* ── Month grid ── */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            padding: 36px 40px;
+            background: #f8f9fa;
+        }
+
+        @media (max-width: 960px) {
+            .calendar-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .calendar-grid { grid-template-columns: 1fr; }
+        }
+
+        .month-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .month-card:nth-child(1)  { animation-delay: 0.05s; }
+        .month-card:nth-child(2)  { animation-delay: 0.10s; }
+        .month-card:nth-child(3)  { animation-delay: 0.15s; }
+        .month-card:nth-child(4)  { animation-delay: 0.20s; }
+        .month-card:nth-child(5)  { animation-delay: 0.25s; }
+        .month-card:nth-child(6)  { animation-delay: 0.30s; }
+        .month-card:nth-child(7)  { animation-delay: 0.35s; }
+        .month-card:nth-child(8)  { animation-delay: 0.40s; }
+        .month-card:nth-child(9)  { animation-delay: 0.45s; }
+        .month-card:nth-child(10) { animation-delay: 0.50s; }
+        .month-card:nth-child(11) { animation-delay: 0.55s; }
+        .month-card:nth-child(12) { animation-delay: 0.60s; }
+
+        .month-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 12px 16px;
+            font-size: 1em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .month-header .month-num {
+            font-size: 0.75em;
+            opacity: 0.75;
+            font-weight: 400;
+        }
+
+        /* Day-of-week row */
+        .day-labels {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: #ecf0f1;
+            padding: 4px 0;
+        }
+
+        .day-label {
+            text-align: center;
+            font-size: 0.68em;
+            font-weight: 700;
+            color: #7f8c8d;
+            padding: 4px 2px;
+            text-transform: uppercase;
+        }
+
+        /* Day cells */
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            padding: 6px;
+            gap: 3px;
+        }
+
+        .day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 0.72em;
+            font-weight: 500;
+            color: #444;
+            position: relative;
+            cursor: default;
+            transition: transform 0.15s ease;
+        }
+
+        .day:hover { transform: scale(1.12); z-index: 2; }
+
+        .day.empty { background: transparent; }
+
+        .day.weekend { color: #bbb; }
+
+        .day.today {
+            border: 2px solid #e74c3c;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+
+        /* Training types */
+        .day.sprint-planning   { background: #d6eaf8; color: #1a5276; }
+        .day.daily-standup     { background: #d5f5e3; color: #1e8449; }
+        .day.sprint-review     { background: #fdebd0; color: #784212; }
+        .day.retrospective     { background: #f9ebea; color: #922b21; }
+        .day.backlog-grooming  { background: #e8daef; color: #6c3483; }
+        .day.agile-workshop    { background: #fef9e7; color: #7d6608; }
+        .day.certification     { background: #eafaf1; color: #145a32; font-weight: 700; }
+        .day.coaching          { background: #fdfefe; color: #1b4f72; border: 1px solid #aed6f1; }
+
+        .day .dot {
+            position: absolute;
+            bottom: 3px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+        }
+
+        /* ── Events list below each month ── */
+        .events-list {
+            padding: 8px 12px 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 5px 0;
+            font-size: 0.76em;
+            color: #555;
+            border-bottom: 1px dashed #f0f0f0;
+        }
+
+        .event-item:last-child { border-bottom: none; }
+
+        .event-badge {
+            flex-shrink: 0;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-size: 0.82em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* ── Summary stats ── */
+        .summary {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 32px 40px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 760px) {
+            .summary { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .stat-number {
+            font-size: 2.4em;
+            font-weight: 700;
+            color: #3498db;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8em;
+            color: #aaa;
+            background: #f8f9fa;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- Header -->
+    <div class="header">
+        <h1>Agile Training Calendar</h1>
+        <p>Fly-Concorde &nbsp;|&nbsp; 12-Month Programme &nbsp;|&nbsp; 2026</p>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#aed6f1;"></div> Sprint Planning
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#a9dfbf;"></div> Daily Stand-up
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#f9cba0;"></div> Sprint Review
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#f1948a;"></div> Retrospective
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#c39bd3;"></div> Backlog Grooming
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#f9e79f;"></div> Agile Workshop
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#82e0aa;"></div> Certification Prep
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#aed6f1; border:1px solid #85c1e9;"></div> Agile Coaching
+        </div>
+    </div>
+
+    <!-- Calendar months -->
+    <div class="calendar-grid" id="calendar"></div>
+
+    <!-- Summary stats -->
+    <div class="summary">
+        <div class="stat-card">
+            <div class="stat-number">48</div>
+            <div class="stat-label">Sprint Planning Sessions</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">240</div>
+            <div class="stat-label">Daily Stand-ups</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">24</div>
+            <div class="stat-label">Retrospectives</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">6</div>
+            <div class="stat-label">Certification Workshops</div>
+        </div>
+    </div>
+
+    <div class="footer">Fly-Concorde &mdash; StrategyFlow &copy; 2026</div>
+</div>
+
+<script>
+    // ──────────────────────────────────────────────────────────────
+    //  Training event definitions per month (1-indexed day numbers)
+    // ──────────────────────────────────────────────────────────────
+    const eventColors = {
+        'sprint-planning':  { bg: '#d6eaf8', text: '#1a5276', dot: '#2e86c1', label: 'Sprint Planning' },
+        'daily-standup':    { bg: '#d5f5e3', text: '#1e8449', dot: '#27ae60', label: 'Stand-up' },
+        'sprint-review':    { bg: '#fdebd0', text: '#784212', dot: '#e67e22', label: 'Sprint Review' },
+        'retrospective':    { bg: '#f9ebea', text: '#922b21', dot: '#e74c3c', label: 'Retrospective' },
+        'backlog-grooming': { bg: '#e8daef', text: '#6c3483', dot: '#9b59b6', label: 'Backlog Grooming' },
+        'agile-workshop':   { bg: '#fef9e7', text: '#7d6608', dot: '#f1c40f', label: 'Agile Workshop' },
+        'certification':    { bg: '#eafaf1', text: '#145a32', dot: '#1abc9c', label: 'Certification Prep' },
+        'coaching':         { bg: '#eaf4fb', text: '#1b4f72', dot: '#85c1e9', label: 'Agile Coaching' },
+    };
+
+    // monthEvents[monthIndex (0-based)] = { day: type }
+    const monthEvents = [
+        // January – Kick-off & Foundations
+        {
+            6:  'agile-workshop',   // 6 Jan  – Agile Foundations Workshop
+            7:  'sprint-planning',  // 7 Jan  – Sprint 1 Planning
+            8:  'daily-standup', 9: 'daily-standup', 10: 'daily-standup',
+            13: 'daily-standup', 14: 'daily-standup', 15: 'backlog-grooming',
+            16: 'daily-standup', 17: 'daily-standup',
+            20: 'daily-standup', 21: 'sprint-review', 22: 'retrospective',
+            23: 'sprint-planning',  // Sprint 2 Planning
+            24: 'daily-standup',
+            27: 'daily-standup', 28: 'coaching', 29: 'daily-standup', 30: 'daily-standup',
+        },
+        // February – Scrum Mastery
+        {
+            3:  'daily-standup', 4: 'backlog-grooming', 5: 'daily-standup',
+            6:  'sprint-review', 7: 'retrospective',
+            10: 'sprint-planning', 11: 'daily-standup', 12: 'agile-workshop', // Scrum Deep-dive
+            13: 'daily-standup', 14: 'daily-standup',
+            17: 'daily-standup', 18: 'daily-standup', 19: 'backlog-grooming',
+            20: 'daily-standup', 21: 'sprint-review',
+            24: 'retrospective', 25: 'sprint-planning', 26: 'coaching',
+            27: 'daily-standup', 28: 'daily-standup',
+        },
+        // March – Kanban & Flow
+        {
+            3:  'daily-standup', 4: 'agile-workshop',  // Kanban Fundamentals
+            5:  'daily-standup', 6: 'sprint-review', 7: 'retrospective',
+            10: 'sprint-planning', 11: 'daily-standup', 12: 'daily-standup',
+            13: 'backlog-grooming', 14: 'daily-standup',
+            17: 'daily-standup', 18: 'coaching', 19: 'daily-standup',
+            20: 'sprint-review', 21: 'retrospective',
+            24: 'sprint-planning', 25: 'daily-standup', 26: 'daily-standup',
+            27: 'daily-standup', 28: 'daily-standup',
+            31: 'certification',  // CSM Exam Prep Day 1
+        },
+        // April – User Stories & Estimation
+        {
+            1:  'certification',   // CSM Exam Prep Day 2
+            2:  'sprint-review', 3: 'retrospective',
+            7:  'sprint-planning', 8: 'agile-workshop',  // Story Mapping
+            9:  'daily-standup', 10: 'backlog-grooming', 11: 'daily-standup',
+            14: 'daily-standup', 15: 'daily-standup', 16: 'sprint-review',
+            17: 'retrospective',
+            22: 'sprint-planning', 23: 'coaching', 24: 'daily-standup',
+            25: 'daily-standup', 28: 'daily-standup', 29: 'backlog-grooming',
+            30: 'daily-standup',
+        },
+        // May – DevOps & Continuous Delivery
+        {
+            1:  'sprint-review', 2: 'retrospective',
+            6:  'sprint-planning', 7: 'agile-workshop',  // CI/CD for Agile Teams
+            8:  'daily-standup', 9: 'daily-standup', 12: 'backlog-grooming',
+            13: 'daily-standup', 14: 'daily-standup', 15: 'sprint-review',
+            16: 'retrospective',
+            19: 'sprint-planning', 20: 'daily-standup', 21: 'coaching',
+            22: 'daily-standup', 23: 'daily-standup',
+            27: 'daily-standup', 28: 'backlog-grooming', 29: 'sprint-review',
+            30: 'retrospective',
+        },
+        // June – Mid-Year Review & Scaling
+        {
+            2:  'certification',   // SAFe Awareness Session
+            3:  'sprint-planning', 4: 'daily-standup', 5: 'agile-workshop',
+            6:  'daily-standup', 9: 'backlog-grooming',
+            10: 'daily-standup', 11: 'sprint-review', 12: 'retrospective',
+            13: 'daily-standup',
+            16: 'sprint-planning', 17: 'coaching', 18: 'daily-standup',
+            19: 'daily-standup', 20: 'backlog-grooming',
+            23: 'daily-standup', 24: 'sprint-review', 25: 'retrospective',
+            26: 'agile-workshop', // Scaling Frameworks (LeSS / Nexus)
+            27: 'daily-standup',
+        },
+        // July – Agile Leadership
+        {
+            1:  'sprint-planning', 2: 'daily-standup', 3: 'daily-standup',
+            7:  'agile-workshop',  // Servant Leadership
+            8:  'daily-standup', 9: 'backlog-grooming', 10: 'sprint-review',
+            11: 'retrospective',
+            14: 'sprint-planning', 15: 'coaching', 16: 'daily-standup',
+            17: 'daily-standup', 18: 'daily-standup',
+            21: 'backlog-grooming', 22: 'daily-standup', 23: 'sprint-review',
+            24: 'retrospective', 25: 'daily-standup',
+            28: 'sprint-planning', 29: 'daily-standup', 30: 'daily-standup',
+            31: 'daily-standup',
+        },
+        // August – Metrics & Reporting
+        {
+            1:  'daily-standup',
+            4:  'agile-workshop',  // Agile Metrics Workshop
+            5:  'daily-standup', 6: 'backlog-grooming', 7: 'sprint-review',
+            8:  'retrospective',
+            11: 'sprint-planning', 12: 'daily-standup', 13: 'daily-standup',
+            14: 'coaching', 15: 'daily-standup',
+            18: 'backlog-grooming', 19: 'daily-standup', 20: 'sprint-review',
+            21: 'retrospective',
+            25: 'sprint-planning', 26: 'daily-standup', 27: 'daily-standup',
+            28: 'daily-standup', 29: 'daily-standup',
+        },
+        // September – Product Ownership
+        {
+            1:  'sprint-review', 2: 'retrospective',
+            3:  'agile-workshop',  // Product Ownership Masterclass
+            8:  'sprint-planning', 9: 'daily-standup', 10: 'backlog-grooming',
+            11: 'daily-standup', 12: 'daily-standup',
+            15: 'daily-standup', 16: 'coaching', 17: 'sprint-review',
+            18: 'retrospective',
+            22: 'sprint-planning', 23: 'daily-standup', 24: 'daily-standup',
+            25: 'backlog-grooming', 26: 'daily-standup',
+            29: 'certification',  // CSPO Exam Prep
+            30: 'certification',
+        },
+        // October – Agile Testing & Quality
+        {
+            1:  'sprint-review', 2: 'retrospective',
+            6:  'sprint-planning', 7: 'agile-workshop',  // Agile Testing Workshop
+            8:  'daily-standup', 9: 'daily-standup', 10: 'backlog-grooming',
+            13: 'daily-standup', 14: 'sprint-review', 15: 'retrospective',
+            16: 'coaching',
+            20: 'sprint-planning', 21: 'daily-standup', 22: 'daily-standup',
+            23: 'backlog-grooming', 24: 'daily-standup',
+            27: 'daily-standup', 28: 'sprint-review', 29: 'retrospective',
+            30: 'daily-standup', 31: 'daily-standup',
+        },
+        // November – Team Dynamics & Communication
+        {
+            3:  'sprint-planning', 4: 'agile-workshop',  // Psychological Safety
+            5:  'daily-standup', 6: 'daily-standup', 7: 'backlog-grooming',
+            10: 'daily-standup', 11: 'sprint-review', 12: 'retrospective',
+            13: 'coaching',
+            17: 'sprint-planning', 18: 'daily-standup', 19: 'daily-standup',
+            20: 'backlog-grooming', 21: 'daily-standup',
+            24: 'sprint-review', 25: 'retrospective',
+            26: 'certification',  // Advanced Certified ScrumMaster Prep
+            27: 'daily-standup', 28: 'daily-standup',
+        },
+        // December – Year Review & Continuous Improvement
+        {
+            1:  'sprint-planning', 2: 'daily-standup', 3: 'daily-standup',
+            4:  'backlog-grooming', 5: 'daily-standup',
+            8:  'sprint-review', 9: 'retrospective',
+            10: 'agile-workshop',  // Continuous Improvement Retrospective
+            11: 'coaching',
+            15: 'sprint-planning', 16: 'daily-standup', 17: 'daily-standup',
+            18: 'daily-standup', 19: 'daily-standup',
+            22: 'sprint-review', 23: 'retrospective',
+        },
+    ];
+
+    const monthNames = [
+        'January','February','March','April','May','June',
+        'July','August','September','October','November','December'
+    ];
+
+    const dayAbbr = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+    const today = new Date(2026, 2, 13); // current date: 13 March 2026
+
+    // Named events shown in the list at the bottom of each card
+    const namedEvents = [
+        // Jan
+        [
+            { day: 6,  type: 'agile-workshop',   title: 'Agile Foundations Workshop' },
+            { day: 7,  type: 'sprint-planning',  title: 'Sprint 1 Kick-off Planning' },
+            { day: 21, type: 'sprint-review',    title: 'Sprint 1 Demo & Review' },
+            { day: 28, type: 'coaching',         title: '1-on-1 Agile Coaching' },
+        ],
+        // Feb
+        [
+            { day: 12, type: 'agile-workshop',   title: 'Scrum Deep-Dive Workshop' },
+            { day: 6,  type: 'sprint-review',    title: 'Sprint Review' },
+            { day: 26, type: 'coaching',         title: 'Agile Coaching Session' },
+        ],
+        // Mar
+        [
+            { day: 4,  type: 'agile-workshop',   title: 'Kanban Fundamentals' },
+            { day: 31, type: 'certification',    title: 'CSM Exam Prep – Day 1' },
+        ],
+        // Apr
+        [
+            { day: 1,  type: 'certification',    title: 'CSM Exam Prep – Day 2' },
+            { day: 8,  type: 'agile-workshop',   title: 'User Story Mapping' },
+            { day: 23, type: 'coaching',         title: 'Agile Coaching Session' },
+        ],
+        // May
+        [
+            { day: 7,  type: 'agile-workshop',   title: 'CI/CD for Agile Teams' },
+            { day: 21, type: 'coaching',         title: 'Agile Coaching Session' },
+        ],
+        // Jun
+        [
+            { day: 2,  type: 'certification',    title: 'SAFe Awareness Session' },
+            { day: 5,  type: 'agile-workshop',   title: 'Intro to Scaled Agile' },
+            { day: 26, type: 'agile-workshop',   title: 'LeSS / Nexus Frameworks' },
+        ],
+        // Jul
+        [
+            { day: 7,  type: 'agile-workshop',   title: 'Servant Leadership Workshop' },
+            { day: 15, type: 'coaching',         title: 'Leadership Coaching' },
+        ],
+        // Aug
+        [
+            { day: 4,  type: 'agile-workshop',   title: 'Agile Metrics Workshop' },
+            { day: 14, type: 'coaching',         title: 'Agile Coaching Session' },
+        ],
+        // Sep
+        [
+            { day: 3,  type: 'agile-workshop',   title: 'Product Ownership Masterclass' },
+            { day: 16, type: 'coaching',         title: 'PO Coaching Session' },
+            { day: 29, type: 'certification',    title: 'CSPO Exam Prep – Day 1' },
+            { day: 30, type: 'certification',    title: 'CSPO Exam Prep – Day 2' },
+        ],
+        // Oct
+        [
+            { day: 7,  type: 'agile-workshop',   title: 'Agile Testing Workshop' },
+            { day: 16, type: 'coaching',         title: 'QA & Agile Coaching' },
+        ],
+        // Nov
+        [
+            { day: 4,  type: 'agile-workshop',   title: 'Psychological Safety & Teams' },
+            { day: 13, type: 'coaching',         title: 'Team Dynamics Coaching' },
+            { day: 26, type: 'certification',    title: 'A-CSM Exam Prep' },
+        ],
+        // Dec
+        [
+            { day: 10, type: 'agile-workshop',   title: 'Year-End Improvement Retro' },
+            { day: 11, type: 'coaching',         title: 'Year-End Coaching Review' },
+        ],
+    ];
+
+    function buildMonthCard(year, monthIdx) {
+        const firstDay = new Date(year, monthIdx, 1).getDay(); // 0=Sun
+        const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+        const events = monthEvents[monthIdx] || {};
+
+        const card = document.createElement('div');
+        card.className = 'month-card';
+
+        // Header
+        const header = document.createElement('div');
+        header.className = 'month-header';
+        header.innerHTML = `<span>${monthNames[monthIdx]}</span><span class="month-num">${year}</span>`;
+        card.appendChild(header);
+
+        // Day-of-week labels
+        const dayLabels = document.createElement('div');
+        dayLabels.className = 'day-labels';
+        dayAbbr.forEach(d => {
+            const el = document.createElement('div');
+            el.className = 'day-label';
+            el.textContent = d;
+            dayLabels.appendChild(el);
+        });
+        card.appendChild(dayLabels);
+
+        // Days grid
+        const grid = document.createElement('div');
+        grid.className = 'days-grid';
+
+        // Empty cells before first day
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'day empty';
+            grid.appendChild(empty);
+        }
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dayEl = document.createElement('div');
+            const dow = (firstDay + d - 1) % 7;
+            const isWeekend = dow === 0 || dow === 6;
+
+            const type = events[d];
+            if (type && eventColors[type]) {
+                const c = eventColors[type];
+                dayEl.className = `day ${type}`;
+                dayEl.style.background = c.bg;
+                dayEl.style.color = c.text;
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.style.background = c.dot;
+                dayEl.appendChild(dot);
+            } else {
+                dayEl.className = 'day' + (isWeekend ? ' weekend' : '');
+            }
+
+            // Highlight today
+            const cellDate = new Date(year, monthIdx, d);
+            if (cellDate.toDateString() === today.toDateString()) {
+                dayEl.classList.add('today');
+            }
+
+            const num = document.createElement('span');
+            num.textContent = d;
+            dayEl.appendChild(num);
+            grid.appendChild(dayEl);
+        }
+
+        card.appendChild(grid);
+
+        // Named events list
+        const list = namedEvents[monthIdx];
+        if (list && list.length) {
+            const evList = document.createElement('div');
+            evList.className = 'events-list';
+            list.forEach(ev => {
+                const c = eventColors[ev.type] || {};
+                const item = document.createElement('div');
+                item.className = 'event-item';
+                item.innerHTML = `
+                    <span class="event-badge" style="background:${c.bg};color:${c.text};">${ev.day} ${monthNames[monthIdx].slice(0,3)}</span>
+                    <span>${ev.title}</span>
+                `;
+                evList.appendChild(item);
+            });
+            card.appendChild(evList);
+        }
+
+        return card;
+    }
+
+    const cal = document.getElementById('calendar');
+    for (let m = 0; m < 12; m++) {
+        cal.appendChild(buildMonthCard(2026, m));
+    }
+</script>
+</body>
+</html>
