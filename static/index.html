@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StrategyFlow | Agent App Factory</title>
+  <style>
+    :root {
+      --bg: #07070f;
+      --bg-card: #0d0d1a;
+      --bg-card-hover: #11111f;
+      --border: rgba(255,255,255,0.07);
+      --border-hover: rgba(255,255,255,0.14);
+      --text: #f0f0ff;
+      --muted: #7070a0;
+      --gold: #c9a84c;
+      --gold-dim: rgba(201,168,76,0.15);
+      --gold-glow: rgba(201,168,76,0.08);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 3rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(7,7,15,0.92);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #c9a84c, #e8cc7a, #c9a84c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,168,76,0.25);
+      padding: 0.3rem 0.9rem;
+      border-radius: 20px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 5rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 350px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.09) 0%, transparent 68%);
+      pointer-events: none;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,168,76,0.22);
+      color: var(--gold);
+      padding: 0.35rem 1rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-bottom: 1.75rem;
+    }
+
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 1.25rem;
+    }
+
+    h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, #c9a84c 0%, #e8cc7a 50%, #b8962c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── GRID ── */
+    .section {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* ── CARD ── */
+    .card {
+      display: block;
+      text-decoration: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+                  border-color 0.25s,
+                  box-shadow 0.3s;
+      animation: rise 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.08s; }
+    .card:nth-child(2) { animation-delay: 0.16s; }
+    .card:nth-child(3) { animation-delay: 0.24s; }
+    .card:nth-child(4) { animation-delay: 0.32s; }
+    .card:nth-child(5) { animation-delay: 0.40s; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-shimmer {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.35s;
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: var(--border-hover);
+    }
+
+    .card:hover .card-shimmer { opacity: 1; }
+
+    .card-icon {
+      font-size: 2.4rem;
+      line-height: 1;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .card-arrow {
+      font-size: 1rem;
+      color: var(--muted);
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .card:hover .card-arrow {
+      transform: translate(3px, -3px);
+      color: var(--accent);
+    }
+
+    .card-tagline {
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-style: italic;
+      margin-bottom: 0.85rem;
+      opacity: 0.85;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 1.4rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.22rem 0.65rem;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 680px) {
+      nav { padding: 1rem 1.25rem; }
+      .hero { padding: 3rem 1.25rem 2.5rem; }
+      .section { padding: 0 1.25rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">StrategyFlow</div>
+  <div class="nav-tag">Agent App Factory</div>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="pill"><span class="pill-dot"></span>Powered by Claude Opus 4.7</div>
+  <h1>AI Agents Built for<br><em>Business Excellence</em></h1>
+  <p class="hero-sub">
+    Deploy specialized AI advisors across strategy, market intelligence,
+    finance, operations, and innovation — all in one place.
+  </p>
+</section>
+
+<section class="section">
+  <p class="section-label">Select Your Agent</p>
+  <div class="grid" id="grid"></div>
+</section>
+
+<footer>StrategyFlow Agent App Factory &mdash; Powered by Claude Opus 4.7 &copy; 2025</footer>
+
+<script>
+  const AGENTS = [
+    {
+      id: 'strategy-advisor',
+      icon: '🎯',
+      name: 'Strategy Advisor',
+      tagline: 'Shape your competitive advantage',
+      desc: 'AI-powered strategic planning and business analysis for executives and founders.',
+      tags: ['SWOT Analysis', 'Market Entry', 'Competitive Strategy', 'Growth Planning'],
+      accent: '#c9a84c',
+      glow: 'rgba(201,168,76,0.08)',
+    },
+    {
+      id: 'market-intelligence',
+      icon: '📊',
+      name: 'Market Intelligence',
+      tagline: 'See beyond the horizon',
+      desc: 'Deep market research, trend analysis, and competitive intelligence for informed decisions.',
+      tags: ['Market Sizing', 'Competitor Analysis', 'Trend Forecasting', 'Opportunity Mapping'],
+      accent: '#00b4d8',
+      glow: 'rgba(0,180,216,0.08)',
+    },
+    {
+      id: 'investment-analyst',
+      icon: '💹',
+      name: 'Investment Analyst',
+      tagline: 'Turn insight into alpha',
+      desc: 'Rigorous financial analysis and investment intelligence for sophisticated investors.',
+      tags: ['Financial Modeling', 'Valuation', 'Risk Assessment', 'Portfolio Strategy'],
+      accent: '#2ecc71',
+      glow: 'rgba(46,204,113,0.08)',
+    },
+    {
+      id: 'operations-optimizer',
+      icon: '⚙️',
+      name: 'Operations Optimizer',
+      tagline: 'Execute at peak performance',
+      desc: 'Streamline operations, eliminate inefficiencies, and build scalable systems.',
+      tags: ['Process Optimization', 'Route Planning', 'Compliance', 'Scale Architecture'],
+      accent: '#4a90e2',
+      glow: 'rgba(74,144,226,0.08)',
+    },
+    {
+      id: 'innovation-scout',
+      icon: '🚀',
+      name: 'Innovation Scout',
+      tagline: 'Pioneer the next frontier',
+      desc: 'Identify emerging technologies, disruptive innovations, and future-defining opportunities.',
+      tags: ['Tech Assessment', 'Disruption Mapping', 'R&D Strategy', 'Future Horizons'],
+      accent: '#9b59b6',
+      glow: 'rgba(155,89,182,0.08)',
+    },
+  ];
+
+  const grid = document.getElementById('grid');
+
+  AGENTS.forEach(a => {
+    const card = document.createElement('a');
+    card.href = `/agent.html?id=${a.id}`;
+    card.className = 'card';
+    card.style.setProperty('--accent', a.accent);
+
+    const shimmer = `
+      <div class="card-shimmer" style="background:
+        radial-gradient(circle at 50% 0%, ${a.glow}, transparent 65%);">
+      </div>`;
+
+    card.innerHTML = `
+      ${shimmer}
+      <div class="card-icon">${a.icon}</div>
+      <div class="card-head">
+        <span class="card-name">${a.name}</span>
+        <span class="card-arrow">↗</span>
+      </div>
+      <p class="card-tagline">${a.tagline}</p>
+      <p class="card-desc">${a.desc}</p>
+      <div class="tags">
+        ${a.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+      </div>`;
+
+    grid.appendChild(card);
+  });
+</script>
+</body>
+</html>
