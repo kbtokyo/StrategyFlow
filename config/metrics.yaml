@@ -1,0 +1,54 @@
+# Daily metric reporting configuration.
+#
+# Customize this file for your actual downloaded data. The pipeline is
+# generic: it doesn't assume a specific source, only that someone drops a
+# CSV/XLSX export into data/incoming/ each day with the columns listed
+# under `source_columns` below.
+
+# Google Sheet the computed metrics get published to.
+# The service account (see docs/daily-metric-reporting.md) must have
+# "Editor" access to this sheet.
+google_sheet:
+  spreadsheet_id: "REPLACE_WITH_YOUR_SHEET_ID"
+  worksheet_name: "Daily Metrics"
+
+# Maps raw column names in the downloaded file to canonical names used
+# throughout the pipeline. Update the left-hand side to match whatever
+# your export actually calls these columns.
+source_columns:
+  date: "Date"
+  revenue: "Revenue"
+  new_customers: "New Customers"
+  active_customers: "Active Customers"
+  orders: "Orders"
+  churned_customers: "Churned Customers"
+
+# Daily KPIs to compute from the normalized data. `agg` is how the column
+# is rolled up across all rows for the day (sum, mean, max, min, last,
+# count). `format` controls how it's rendered when published.
+metrics:
+  - name: total_revenue
+    source: revenue
+    agg: sum
+    format: currency
+  - name: new_customers
+    source: new_customers
+    agg: sum
+    format: integer
+  - name: active_customers
+    source: active_customers
+    agg: last
+    format: integer
+  - name: orders
+    source: orders
+    agg: sum
+    format: integer
+  - name: churn_rate
+    formula: "churned_customers / active_customers"
+    agg: derived
+    format: percent
+
+# Flag a metric in the report if it moves more than this fraction versus
+# the prior day's value (e.g. 0.2 = 20%). Helps catch bad exports or real
+# anomalies worth a human look before the number goes in the sheet.
+anomaly_threshold: 0.2
