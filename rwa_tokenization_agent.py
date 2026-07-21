@@ -23,7 +23,19 @@ from datetime import datetime, timedelta
 from typing import Any
 
 # ── Client ────────────────────────────────────────────────────────────────────
-client = anthropic.Anthropic()
+import os
+
+def _make_client() -> anthropic.Anthropic:
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        return anthropic.Anthropic()
+    # Claude Code web session — use OAuth bearer token
+    token_file = "/home/claude/.claude/remote/.session_ingress_token"
+    if os.path.exists(token_file):
+        token = open(token_file).read().strip()
+        return anthropic.Anthropic(auth_token=token)
+    return anthropic.Anthropic()  # will raise AuthenticationError with a clear message
+
+client = _make_client()
 
 # ── Asset-class reference data ─────────────────────────────────────────────────
 ASSET_CLASSES = {
