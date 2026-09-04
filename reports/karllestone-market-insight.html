@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Karllestone Capital — Market Insight</title>
+<style>
+  :root{
+    --navy:#0b1f3a;
+    --navy-deep:#071528;
+    --gold:#b08d57;
+    --gold-light:#d4b483;
+    --ink:#1c1c1c;
+    --muted:#5a5f66;
+    --paper:#fdfcfa;
+    --line:#e2ddd3;
+    --green:#3a7d5c;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#eee9e0;
+    font-family:"Georgia","Times New Roman",serif;
+    color:var(--ink);
+  }
+  .sheet{
+    max-width:860px;
+    margin:40px auto;
+    background:var(--paper);
+    box-shadow:0 10px 40px rgba(0,0,0,0.15);
+  }
+  .masthead{
+    background:linear-gradient(135deg,var(--navy) 0%,var(--navy-deep) 100%);
+    color:#fff;
+    padding:44px 56px 34px;
+    position:relative;
+    overflow:hidden;
+  }
+  .masthead::after{
+    content:"";
+    position:absolute;
+    right:-60px; top:-60px;
+    width:220px; height:220px;
+    border:1px solid rgba(212,180,131,0.25);
+    border-radius:50%;
+  }
+  .brand{
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    letter-spacing:4px;
+    font-size:13px;
+    color:var(--gold-light);
+    text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .masthead h1{
+    font-size:30px;
+    line-height:1.25;
+    margin:0 0 14px;
+    font-weight:400;
+  }
+  .masthead .kicker{
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.65);
+  }
+  .masthead .date{
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    font-size:13px;
+    color:rgba(255,255,255,0.55);
+    margin-top:10px;
+  }
+  .gold-rule{
+    height:3px;
+    background:linear-gradient(90deg,var(--gold) 0%,var(--gold-light) 100%);
+  }
+  .content{
+    padding:44px 56px 20px;
+  }
+  .stat-strip{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin-bottom:40px;
+    font-family:"Helvetica Neue",Arial,sans-serif;
+  }
+  .stat{
+    background:var(--paper);
+    padding:20px 16px;
+    text-align:center;
+  }
+  .stat .num{
+    font-size:21px;
+    color:var(--navy);
+    font-weight:700;
+    letter-spacing:-0.5px;
+  }
+  .stat .label{
+    font-size:10px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-top:6px;
+  }
+  .exec-summary{
+    font-size:17px;
+    line-height:1.7;
+    color:var(--navy);
+    border-left:3px solid var(--gold);
+    padding:4px 0 4px 22px;
+    margin-bottom:42px;
+    font-style:italic;
+  }
+  section{margin-bottom:38px;}
+  h2{
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--gold);
+    border-bottom:1px solid var(--line);
+    padding-bottom:10px;
+    margin:0 0 18px;
+  }
+  h3{
+    font-size:19px;
+    color:var(--navy);
+    font-weight:700;
+    margin:0 0 12px;
+  }
+  p{
+    font-size:15.5px;
+    line-height:1.75;
+    color:var(--ink);
+    margin:0 0 16px;
+  }
+  .callout{
+    background:#f5f1e8;
+    border:1px solid var(--line);
+    border-left:4px solid var(--navy);
+    padding:18px 22px;
+    margin:20px 0;
+    font-size:14.5px;
+    line-height:1.65;
+    color:var(--navy);
+  }
+  ul.dd{
+    margin:0 0 16px;
+    padding-left:0;
+    list-style:none;
+  }
+  ul.dd li{
+    font-size:15px;
+    line-height:1.6;
+    padding:10px 0 10px 26px;
+    border-bottom:1px solid var(--line);
+    position:relative;
+  }
+  ul.dd li:last-child{border-bottom:none;}
+  ul.dd li::before{
+    content:"—";
+    position:absolute;
+    left:0;
+    color:var(--gold);
+    font-weight:700;
+  }
+
+  /* AI Agent Panel */
+  .agent-panel{
+    background:var(--navy-deep);
+    border:1px solid rgba(212,180,131,0.3);
+    border-radius:6px;
+    padding:24px 26px;
+    margin:0 0 8px;
+    font-family:"Helvetica Neue",Arial,sans-serif;
+    color:#e8e4da;
+  }
+  .agent-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .agent-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:13px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--gold-light);
+  }
+  .pulse-dot{
+    width:9px;height:9px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 0 0 rgba(58,125,92,0.7);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(58,125,92,0.6);}
+    70%{box-shadow:0 0 0 8px rgba(58,125,92,0);}
+    100%{box-shadow:0 0 0 0 rgba(58,125,92,0);}
+  }
+  .agent-clock{
+    font-size:12px;
+    color:rgba(232,228,218,0.6);
+    font-variant-numeric:tabular-nums;
+  }
+  .agent-feed{
+    background:rgba(0,0,0,0.2);
+    border-radius:4px;
+    padding:14px 16px;
+    min-height:100px;
+    max-height:150px;
+    overflow-y:auto;
+    font-size:12.5px;
+    line-height:1.9;
+  }
+  .agent-feed .line{
+    display:flex;
+    gap:10px;
+    opacity:0;
+    animation:fadeIn 0.5s forwards;
+  }
+  @keyframes fadeIn{ to{opacity:1;} }
+  .agent-feed .ts{
+    color:var(--gold-light);
+    flex-shrink:0;
+    font-variant-numeric:tabular-nums;
+  }
+  .agent-feed .msg{color:rgba(232,228,218,0.85);}
+  .agent-foot{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid rgba(255,255,255,0.08);
+    font-size:11px;
+    color:rgba(232,228,218,0.45);
+  }
+  .agent-badge{
+    background:rgba(212,180,131,0.15);
+    border:1px solid rgba(212,180,131,0.3);
+    color:var(--gold-light);
+    padding:3px 9px;
+    border-radius:20px;
+    font-size:10px;
+    letter-spacing:0.5px;
+  }
+
+  .outlook{
+    background:var(--navy);
+    color:#eee;
+    padding:32px 56px;
+    margin:0 -56px;
+  }
+  .outlook h2{
+    color:var(--gold-light);
+    border-bottom:1px solid rgba(255,255,255,0.15);
+  }
+  .outlook p{color:rgba(255,255,255,0.88);}
+  footer{
+    padding:32px 56px 44px;
+    font-family:"Helvetica Neue",Arial,sans-serif;
+  }
+  .disclosure{
+    font-size:11.5px;
+    color:var(--muted);
+    line-height:1.6;
+    border-top:1px solid var(--line);
+    padding-top:20px;
+    margin-bottom:20px;
+  }
+  .footer-brand{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .footer-brand .name{
+    font-size:14px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--navy);
+    font-weight:700;
+  }
+  .footer-brand .tagline{
+    font-size:12.5px;
+    color:var(--gold);
+    font-style:italic;
+  }
+  @media (max-width:600px){
+    .sheet{margin:0;}
+    .masthead,.content,footer{padding-left:24px;padding-right:24px;}
+    .outlook{padding-left:24px;padding-right:24px;margin:0 -24px;}
+    .stat-strip{grid-template-columns:repeat(2,1fr);}
+    .masthead h1{font-size:22px;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="masthead">
+    <div class="brand">Karllestone Capital</div>
+    <div class="kicker">Market Insight</div>
+    <h1>The ETF Revolution: Active Management and Digital Assets Reshape the Landscape</h1>
+    <div class="date">Updated August 2026 &nbsp;·&nbsp; Strategy &amp; Transformation Research</div>
+  </div>
+  <div class="gold-rule"></div>
+
+  <div class="content">
+
+    <div class="stat-strip">
+      <div class="stat"><div class="num">~80%</div><div class="label">Of New ETF Launches, 2026</div></div>
+      <div class="stat"><div class="num">$1.47T</div><div class="label">Active ETF Assets</div></div>
+      <div class="stat"><div class="num">$78.4K</div><div class="label">Bitcoin, Late Aug 2026</div></div>
+      <div class="stat"><div class="num">$2.63T</div><div class="label">Global Crypto Market Cap</div></div>
+    </div>
+
+    <p class="exec-summary">
+      A year on, the shift toward active management has become the dominant force in ETF markets, while digital assets have moved through a sharp correction and a partial recovery — together underscoring the need for continuous, disciplined monitoring rather than a one-time read of the landscape.
+    </p>
+
+    <section>
+      <h2>Active ETF Momentum — Now the Majority</h2>
+      <h3>Active Has Overtaken Passive in New Launches</h3>
+      <p>What was a surge in mid-2025 has become the industry's new normal. Active ETFs now account for roughly 80% of new ETF launches in 2026, up sharply from the roughly two-thirds share seen in mid-2025. Nearly 1,000 active ETFs launched in 2025 alone, and by year-end the number of active ETFs in the U.S. had overtaken passive ETFs outright — 2,741 active versus 2,187 passive.</p>
+      <p>The asset growth has kept pace with the launch activity. Active ETF assets have crossed $1.47 trillion, compounding at roughly 59% annually over the past three years, and pulled in $459 billion of net new flows in 2025 — about 31% of all ETF flows industry-wide. BlackRock, JPMorgan, and Fidelity remain the category's dominant issuers, continuing to expand buffer, covered call, and options-overlay lineups aimed at downside protection and income generation.</p>
+
+      <div class="callout">
+        <strong>Performance reality check:</strong> Despite the launch and asset growth, the latest SPIVA scorecard found 79% of actively managed large-cap U.S. equity funds underperformed the S&P 500 in 2025, and only 24% of active ETFs have beaten their benchmarks over ten years. The wrapper's tax efficiency and falling fees — some active ETFs now price as low as 0.23% — are driving adoption more than realized outperformance.
+      </div>
+
+      <p>Europe is following the same trajectory with a lag: active ETFs gathered more than €38bn of inflows in 2025 and accounted for over 36% of new European launches, with State Street forecasting active launches will overtake passive ones across the region in 2026 as at least 15 new issuers enter the market.</p>
+    </section>
+
+    <section>
+      <h2>Digital Assets — Volatility Returns, Then a Rebound</h2>
+      <h3>Bitcoin's Round Trip Through 2026</h3>
+      <p>The path has been far less linear than 2025's steady climb. Bitcoin entered 2026 above $93,000 on post-halving and ETF-driven momentum, then fell into a drawdown of nearly 50% from its October 2025 record of $126,198, bottoming in the low-$60,000s through much of the summer.</p>
+      <p>August brought a sharp reversal: renewed ETF inflows, a Treasury bond buyback announcement, and a short squeeze pushed Bitcoin from roughly $64,000 to above $80,000 within weeks, closing the month near $78,400. Ethereum tracked a similar pattern, ending August around $2,450. The global cryptocurrency market capitalization stood at approximately $2.63 trillion by month-end, with Bitcoin dominance settling in the high 50s — elevated versus history, but down from a four-year high above 63% reached in mid-2025.</p>
+      <p>Capital rotation into altcoins remains limited: the Altcoin Season Index sat below 40 through August, meaning ETF-driven institutional demand is still concentrating disproportionately in Bitcoin rather than broadening across the digital asset space.</p>
+    </section>
+
+    <section>
+      <h2>Continuous AI Monitoring</h2>
+      <h3>Why This Market Needs an Always-On Agent</h3>
+      <p>The whipsaw in both active ETF flows and crypto pricing over the past thirteen months illustrates why point-in-time research has a short shelf life in this environment. Karllestone Capital's approach pairs this kind of periodic insight with a continuously-running monitoring agent — tracking ETF flow data, issuer filings, and digital asset price/dominance shifts around the clock so that portfolio conversations start from the current picture, not last quarter's.</p>
+
+      <div class="agent-panel">
+        <div class="agent-header">
+          <div class="agent-title"><span class="pulse-dot"></span> Karllestone Monitoring Agent — Live</div>
+          <div class="agent-clock" id="agentClock">--:--:--</div>
+        </div>
+        <div class="agent-feed" id="agentFeed"></div>
+        <div class="agent-foot">
+          <span>Simulated feed for illustration — connect live data sources to activate</span>
+          <span class="agent-badge">24/7 · AUTONOMOUS</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Strategic Implications</h2>
+      <h3>Portfolio Construction in a Faster-Moving Market</h3>
+      <p>The maturing active ETF category gives allocators genuine tools for model portfolio construction — buffer and income overlays that didn't exist at scale two years ago. But the SPIVA data is a reminder that access to active management is not the same as access to outperformance; manager selection matters as much as ever.</p>
+      <p>On the digital asset side, August's rebound shows how quickly sentiment can turn on a single catalyst — a Treasury announcement, an ETF flow report, a short squeeze. Static allocation views risk being stale within weeks, not quarters.</p>
+
+      <h3>Due Diligence Considerations</h3>
+      <ul class="dd">
+        <li>Weighing an active strategy's actual track record against the SPIVA underperformance base rate</li>
+        <li>Evaluating fee compression across active ETFs (now as low as 0.23%) versus expected alpha</li>
+        <li>Monitoring Bitcoin dominance and the Altcoin Season Index as signals of capital concentration risk</li>
+        <li>Assessing derivative-based buffer and covered call structures for outcome-period and cap trade-offs</li>
+      </ul>
+    </section>
+
+  </div>
+
+  <div class="outlook">
+    <h2>Outlook</h2>
+    <p>Active management has decisively won the ETF launch race — the debate now shifts from "will active ETFs gain share" to "which active strategies actually earn their fees." Digital assets remain the more volatile leg of the portfolio, with institutional ETF flows still the dominant driver of price action.</p>
+    <p>Karllestone Capital views continuous monitoring, not periodic review, as the appropriate cadence for both categories going into the remainder of 2026.</p>
+  </div>
+
+  <footer>
+    <div class="disclosure">
+      This market insight is prepared by Karllestone Capital's research team for informational purposes only and does not constitute investment advice or a recommendation to buy or sell any security. Market data is sourced from Morningstar, J.P. Morgan Asset Management, State Street, CoinGecko, and financial press reporting current as of late August 2026, and is subject to change. Past performance is not indicative of future results. The monitoring agent panel above is a client-side visual simulation for illustrative purposes and is not connected to live market data.
+    </div>
+    <div class="footer-brand">
+      <div class="name">Karllestone Capital</div>
+      <div class="tagline">Navigating Markets. Creating Value.</div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  const feed = document.getElementById('agentFeed');
+  const clockEl = document.getElementById('agentClock');
+
+  const events = [
+    "Scanning active ETF filings — 3 new launches detected (issuer: multi)",
+    "Bitcoin dominance check: 58.4% — within 24h range",
+    "ETF flow sweep complete — active category net positive",
+    "Crypto market cap delta: +0.6% since last cycle",
+    "Covered call / buffer ETF AUM refresh — no material change",
+    "Cross-referencing SPIVA benchmark data — no update this cycle",
+    "Altcoin Season Index check: 34 — Bitcoin-led regime persists",
+    "Model portfolio drift check — within tolerance bands",
+    "Scanning issuer press releases (BlackRock, JPMorgan, Fidelity)",
+    "European ETF launch tracker — active share holding above 36%"
+  ];
+
+  function pad(n){ return n.toString().padStart(2,'0'); }
+
+  function tickClock(){
+    const d = new Date();
+    clockEl.textContent = pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+  }
+
+  function addLine(){
+    const d = new Date();
+    const ts = pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+    const msg = events[Math.floor(Math.random()*events.length)];
+    const row = document.createElement('div');
+    row.className = 'line';
+    row.innerHTML = '<span class="ts">'+ts+'</span><span class="msg">'+msg+'</span>';
+    feed.appendChild(row);
+    feed.scrollTop = feed.scrollHeight;
+    while(feed.children.length > 6){ feed.removeChild(feed.firstChild); }
+  }
+
+  tickClock();
+  setInterval(tickClock, 1000);
+  addLine();
+  setInterval(addLine, 3500);
+})();
+</script>
+
+</body>
+</html>
