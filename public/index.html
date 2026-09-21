@@ -1,0 +1,2873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strategic Intelligence Canvas | Karllestone Capital</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0a0b0f;
+  --ink-2: #12141a;
+  --ink-3: #1a1d26;
+  --ink-4: #252836;
+  --surface: #1e2130;
+  --surface-2: #272b3d;
+  --border: rgba(255,255,255,0.07);
+  --border-glow: rgba(139,92,246,0.3);
+
+  --amber: #f59e0b;
+  --amber-glow: rgba(245,158,11,0.15);
+  --amber-dim: #92680a;
+
+  --violet: #8b5cf6;
+  --violet-glow: rgba(139,92,246,0.15);
+  --violet-bright: #a78bfa;
+
+  --teal: #14b8a6;
+  --teal-glow: rgba(20,184,166,0.15);
+  --teal-bright: #2dd4bf;
+
+  --rose: #f43f5e;
+  --rose-glow: rgba(244,63,94,0.15);
+
+  --sky: #38bdf8;
+  --sky-glow: rgba(56,189,248,0.15);
+
+  --lime: #84cc16;
+  --lime-glow: rgba(132,204,22,0.12);
+
+  --text: #e8eaf2;
+  --text-2: #9ca3bc;
+  --text-3: #5c6380;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--ink);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.4;
+}
+
+/* ── HEADER ── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,11,15,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+}
+
+.header-inner {
+  max-width: 1600px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 68px; gap: 20px;
+}
+
+.logo {
+  display: flex; align-items: center; gap: 14px;
+}
+
+.logo-mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--violet), var(--teal));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; position: relative; flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(139,92,246,0.4);
+}
+
+.logo-text { line-height: 1; }
+.logo-name {
+  font-family: var(--font-display);
+  font-size: 1.2em; font-weight: 700;
+  background: linear-gradient(90deg, var(--text), var(--violet-bright));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.logo-sub { font-size: 0.7em; color: var(--text-3); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+
+.header-center {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--ink-3); border: 1px solid var(--border);
+  border-radius: 50px; padding: 4px 6px;
+}
+
+.mode-btn {
+  padding: 7px 16px; border-radius: 50px; border: none;
+  font-family: var(--font-body); font-size: 0.82em; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; color: var(--text-3); background: none;
+}
+.mode-btn.active {
+  background: linear-gradient(135deg, var(--violet), var(--teal));
+  color: white; box-shadow: 0 2px 12px rgba(139,92,246,0.4);
+}
+
+.header-actions { display: flex; align-items: center; gap: 10px; }
+
+.hbtn {
+  padding: 8px 16px; border-radius: 8px; border: none;
+  font-family: var(--font-body); font-size: 0.82em; font-weight: 500;
+  cursor: pointer; transition: all 0.25s; display: flex; align-items: center; gap: 7px;
+}
+.hbtn-ghost { background: var(--ink-3); color: var(--text-2); border: 1px solid var(--border); }
+.hbtn-ghost:hover { background: var(--ink-4); color: var(--text); border-color: rgba(255,255,255,0.12); }
+.hbtn-primary { background: linear-gradient(135deg, var(--violet), var(--teal)); color: white; }
+.hbtn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(139,92,246,0.4); }
+
+/* ── AGENT STATUS BAR ── */
+.agent-bar {
+  background: var(--ink-2);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 32px;
+}
+.agent-bar-inner {
+  max-width: 1600px; margin: 0 auto;
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+}
+.agent-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 14px; border-radius: 50px;
+  border: 1px solid; font-size: 0.78em; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+}
+.agent-dot { width: 7px; height: 7px; border-radius: 50%; animation: pulse 2s infinite; }
+
+.agent-socrates { border-color: rgba(245,158,11,0.4); color: var(--amber); background: var(--amber-glow); }
+.agent-socrates .agent-dot { background: var(--amber); }
+.agent-strategist { border-color: rgba(139,92,246,0.4); color: var(--violet-bright); background: var(--violet-glow); }
+.agent-strategist .agent-dot { background: var(--violet); }
+.agent-devils { border-color: rgba(244,63,94,0.4); color: #fb7185; background: var(--rose-glow); }
+.agent-devils .agent-dot { background: var(--rose); }
+.agent-market { border-color: rgba(56,189,248,0.4); color: var(--sky); background: var(--sky-glow); }
+.agent-market .agent-dot { background: var(--sky); }
+.agent-synthesis { border-color: rgba(20,184,166,0.4); color: var(--teal-bright); background: var(--teal-glow); }
+.agent-synthesis .agent-dot { background: var(--teal); }
+.agent-vc { border-color: rgba(132,204,22,0.4); color: var(--lime); background: var(--lime-glow); }
+.agent-vc .agent-dot { background: var(--lime); }
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.agent-bar-label { font-size: 0.75em; color: var(--text-3); margin-right: 4px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* ── MAIN LAYOUT ── */
+.main-wrap { max-width: 1600px; margin: 0 auto; padding: 32px; position: relative; z-index: 1; }
+
+/* ── MODEL SELECTOR ── */
+.section-label {
+  font-size: 0.72em; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px; margin-bottom: 36px;
+}
+
+.model-card {
+  background: var(--ink-3);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px 16px;
+  cursor: pointer; transition: all 0.25s; text-align: center;
+  position: relative; overflow: hidden;
+}
+.model-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--card-glow, transparent); opacity: 0; transition: opacity 0.3s;
+}
+.model-card:hover::before, .model-card.active::before { opacity: 1; }
+
+.model-card:hover, .model-card.active {
+  border-color: var(--card-color, var(--violet));
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px var(--card-shadow, rgba(139,92,246,0.2));
+}
+
+.model-emoji { font-size: 2em; margin-bottom: 8px; display: block; }
+.model-card h3 { font-size: 0.88em; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.model-card p { font-size: 0.75em; color: var(--text-3); }
+
+/* ── CANVAS LAYOUT ── */
+.canvas-layout {
+  display: grid;
+  grid-template-columns: 1fr 80px 1fr;
+  gap: 0; margin-bottom: 40px;
+  position: relative;
+}
+
+.canvas-side-label {
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px; border-radius: 10px;
+}
+
+.vp-label { background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.25); }
+.cs-label { background: rgba(20,184,166,0.12); border: 1px solid rgba(20,184,166,0.25); }
+
+.side-title { font-family: var(--font-display); font-size: 1.1em; font-weight: 700; }
+.vp-title { color: var(--violet-bright); }
+.cs-title { color: var(--teal-bright); }
+
+/* FIT CONNECTOR */
+.fit-connector {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative; padding-top: 60px;
+}
+.fit-circle {
+  width: 60px; height: 60px;
+  background: linear-gradient(135deg, var(--violet), var(--teal));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 0 30px rgba(139,92,246,0.5);
+  cursor: pointer; transition: transform 0.2s;
+  position: relative; z-index: 2;
+}
+.fit-circle:hover { transform: scale(1.1); }
+.fit-line { width: 2px; flex: 1; background: linear-gradient(to bottom, var(--violet), var(--teal)); opacity: 0.3; }
+
+/* ── CANVAS BLOCK ── */
+.canvas-block {
+  background: var(--ink-2);
+  border: 1px solid var(--border);
+  border-radius: 16px; margin-bottom: 16px;
+  overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s;
+  position: relative;
+}
+.canvas-block:hover {
+  border-color: rgba(255,255,255,0.12);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.canvas-block.has-content { border-color: rgba(139,92,246,0.2); }
+.canvas-block.analyzed { border-color: rgba(20,184,166,0.3); }
+
+.block-accent {
+  height: 3px; width: 100%;
+}
+
+.block-body { padding: 20px; }
+
+.block-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.block-title-row { display: flex; align-items: center; gap: 10px; }
+.block-icon-wrap {
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+  flex-shrink: 0;
+}
+.block-name { font-weight: 600; font-size: 0.95em; color: var(--text); }
+.block-desc { font-size: 0.78em; color: var(--text-3); margin-top: 1px; }
+
+.status-chip {
+  padding: 3px 10px; border-radius: 50px;
+  font-size: 0.7em; font-weight: 600; white-space: nowrap;
+}
+.chip-empty { background: rgba(255,255,255,0.05); color: var(--text-3); }
+.chip-filled { background: var(--violet-glow); color: var(--violet-bright); border: 1px solid rgba(139,92,246,0.3); }
+.chip-done { background: var(--teal-glow); color: var(--teal-bright); border: 1px solid rgba(20,184,166,0.3); }
+
+.block-textarea {
+  width: 100%; min-height: 90px;
+  background: var(--ink-3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 14px;
+  font-family: var(--font-body); font-size: 0.88em; color: var(--text);
+  resize: vertical; transition: all 0.2s; margin-bottom: 12px; line-height: 1.6;
+}
+.block-textarea:focus { outline: none; border-color: rgba(139,92,246,0.5); background: var(--ink-4); box-shadow: 0 0 0 3px rgba(139,92,246,0.1); }
+.block-textarea::placeholder { color: var(--text-3); }
+
+.block-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.abtn {
+  padding: 7px 14px; border-radius: 8px; border: none;
+  font-family: var(--font-body); font-size: 0.8em; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+}
+.abtn-ai { background: linear-gradient(135deg, var(--violet), #7c3aed); color: white; }
+.abtn-ai:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,0.4); }
+.abtn-socratic { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+.abtn-socratic:hover { background: rgba(245,158,11,0.2); }
+.abtn-vc { background: var(--lime-glow); color: var(--lime); border: 1px solid rgba(132,204,22,0.3); }
+.abtn-vc:hover { background: rgba(132,204,22,0.2); }
+.abtn-ghost { background: var(--ink-3); color: var(--text-2); border: 1px solid var(--border); }
+.abtn-ghost:hover { background: var(--ink-4); border-color: rgba(255,255,255,0.1); }
+.abtn-danger { background: var(--rose-glow); color: #fb7185; border: 1px solid rgba(244,63,94,0.3); }
+.abtn-danger:hover { background: rgba(244,63,94,0.15); }
+
+/* ── ANALYSIS OUTPUT ── */
+.analysis-out {
+  margin-top: 14px; display: none;
+  animation: fadeSlide 0.35s ease;
+}
+.analysis-out.show { display: block; }
+
+@keyframes fadeSlide {
+  from { opacity:0; transform: translateY(8px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+.chain-step-note {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.78em; color: var(--text-3); padding: 10px 4px;
+  animation: fadeSlide 0.3s ease;
+}
+.chain-step-note::before {
+  content: ''; width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid rgba(139,92,246,0.3); border-top-color: var(--violet);
+  animation: rot 0.7s linear infinite; flex-shrink: 0;
+}
+
+.agent-response {
+  border-radius: 12px; padding: 16px 18px; margin-bottom: 10px;
+  border: 1px solid;
+  animation: fadeSlide 0.35s ease;
+}
+.agent-response-header {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.75em; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; margin-bottom: 10px; padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.agent-response-body { font-size: 0.85em; line-height: 1.75; color: var(--text-2); }
+.agent-response-body strong { color: var(--text); font-weight: 600; }
+.agent-response-body em { font-style: italic; color: var(--text-3); }
+
+/* Agent color themes */
+.resp-socrates { background: rgba(245,158,11,0.06); border-color: rgba(245,158,11,0.2); }
+.resp-socrates .agent-response-header { color: var(--amber); }
+.resp-strategist { background: rgba(139,92,246,0.06); border-color: rgba(139,92,246,0.2); }
+.resp-strategist .agent-response-header { color: var(--violet-bright); }
+.resp-devils { background: rgba(244,63,94,0.06); border-color: rgba(244,63,94,0.2); }
+.resp-devils .agent-response-header { color: #fb7185; }
+.resp-market { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.2); }
+.resp-market .agent-response-header { color: var(--sky); }
+.resp-synthesis { background: rgba(20,184,166,0.06); border-color: rgba(20,184,166,0.2); }
+.resp-synthesis .agent-response-header { color: var(--teal-bright); }
+.resp-vc { background: rgba(132,204,22,0.06); border-color: rgba(132,204,22,0.2); }
+.resp-vc .agent-response-header { color: var(--lime); }
+
+/* Socratic Questions panel */
+.socratic-panel {
+  background: rgba(245,158,11,0.05);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 12px; padding: 16px 18px; margin-bottom: 10px;
+}
+.socratic-q {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.socratic-q:last-child { border-bottom: none; padding-bottom: 0; }
+.q-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--amber-glow); color: var(--amber);
+  font-size: 0.72em; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+}
+.q-text { font-size: 0.85em; color: var(--text-2); line-height: 1.6; cursor: pointer; }
+.q-text:hover { color: var(--amber); }
+
+/* ── COMPREHENSIVE ANALYSIS ── */
+.synthesis-section {
+  background: var(--ink-2);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 36px;
+  margin-bottom: 32px; position: relative; overflow: hidden;
+}
+.synthesis-section::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(139,92,246,0.1), transparent);
+  border-radius: 50%;
+}
+
+.synthesis-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px; flex-wrap: wrap; gap: 16px;
+}
+.synthesis-title {
+  font-family: var(--font-display); font-size: 1.6em; font-weight: 700;
+  background: linear-gradient(90deg, var(--violet-bright), var(--teal-bright));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.synthesis-sub { font-size: 0.85em; color: var(--text-3); margin-top: 4px; }
+
+.agent-roster {
+  display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px;
+}
+
+.roster-agent {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; border-radius: 12px; border: 1px solid; flex: 1; min-width: 160px;
+  cursor: pointer; transition: all 0.2s; position: relative;
+}
+.roster-agent.selected::after {
+  content: '✓';
+  position: absolute; top: 6px; right: 8px;
+  font-size: 0.7em; opacity: 0.7;
+}
+.roster-icon { font-size: 1.4em; }
+.roster-name { font-size: 0.82em; font-weight: 600; }
+.roster-desc { font-size: 0.72em; margin-top: 2px; }
+
+.ra-socrates { border-color: rgba(245,158,11,0.3); background: var(--amber-glow); color: var(--amber); }
+.ra-socrates.selected { background: rgba(245,158,11,0.15); }
+.ra-strategist { border-color: rgba(139,92,246,0.3); background: var(--violet-glow); color: var(--violet-bright); }
+.ra-strategist.selected { background: rgba(139,92,246,0.15); }
+.ra-devils { border-color: rgba(244,63,94,0.3); background: var(--rose-glow); color: #fb7185; }
+.ra-devils.selected { background: rgba(244,63,94,0.15); }
+.ra-market { border-color: rgba(56,189,248,0.3); background: var(--sky-glow); color: var(--sky); }
+.ra-market.selected { background: rgba(56,189,248,0.15); }
+.ra-synthesis { border-color: rgba(20,184,166,0.3); background: var(--teal-glow); color: var(--teal-bright); }
+.ra-synthesis.selected { background: rgba(20,184,166,0.15); }
+.ra-vc { border-color: rgba(132,204,22,0.3); background: var(--lime-glow); color: var(--lime); }
+.ra-vc.selected { background: rgba(132,204,22,0.15); }
+
+.synth-action-row {
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+
+.synth-btn {
+  padding: 12px 24px; border-radius: 10px; border: none;
+  font-family: var(--font-body); font-size: 0.9em; font-weight: 600;
+  cursor: pointer; transition: all 0.25s; display: flex; align-items: center; gap: 8px;
+}
+.synth-btn-primary { background: linear-gradient(135deg, var(--violet), var(--teal)); color: white; flex: 1; justify-content: center; }
+.synth-btn-primary:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,92,246,0.4); }
+.synth-btn-ghost { background: var(--ink-3); color: var(--text-2); border: 1px solid var(--border); }
+.synth-btn-ghost:hover { background: var(--ink-4); border-color: rgba(255,255,255,0.1); }
+
+.comprehensive-out {
+  margin-top: 28px; display: none;
+  animation: fadeSlide 0.4s ease;
+}
+.comprehensive-out.show { display: block; }
+
+/* ── PROGRESS BAR ── */
+.progress-section {
+  background: var(--ink-2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px 24px; margin-bottom: 32px;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.progress-label { font-size: 0.78em; color: var(--text-3); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+.progress-track { flex: 1; min-width: 200px; background: var(--ink-3); border-radius: 50px; height: 8px; position: relative; }
+.progress-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--violet), var(--teal)); transition: width 0.5s ease; }
+.progress-count { font-family: var(--font-mono); font-size: 0.82em; color: var(--violet-bright); font-weight: 500; white-space: nowrap; }
+.progress-items { display: flex; gap: 8px; flex-wrap: wrap; flex: 2; }
+.prog-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.75em; padding: 4px 10px; border-radius: 50px;
+  border: 1px solid var(--border); color: var(--text-3);
+  transition: all 0.3s;
+}
+.prog-item.done { color: var(--teal-bright); border-color: rgba(20,184,166,0.3); background: var(--teal-glow); }
+.prog-item.partial { color: var(--violet-bright); border-color: rgba(139,92,246,0.3); background: var(--violet-glow); }
+
+/* ── SPINNER ── */
+.spin {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: white; border-radius: 50%;
+  animation: rot 0.7s linear infinite;
+}
+@keyframes rot { to { transform: rotate(360deg); } }
+
+/* ── TOAST ── */
+.toast-wrap {
+  position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+  display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+}
+.toast {
+  padding: 12px 20px; border-radius: 10px;
+  font-size: 0.85em; font-weight: 500;
+  pointer-events: all; animation: toastIn 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4); max-width: 300px;
+}
+@keyframes toastIn { from { transform: translateX(120%); opacity:0; } to { transform: translateX(0); opacity:1; } }
+.toast-success { background: var(--surface); border: 1px solid rgba(20,184,166,0.4); color: var(--teal-bright); }
+.toast-error { background: var(--surface); border: 1px solid rgba(244,63,94,0.4); color: #fb7185; }
+.toast-info { background: var(--surface); border: 1px solid rgba(139,92,246,0.4); color: var(--violet-bright); }
+
+/* ── FIT METER VISUAL ── */
+.fit-meter {
+  background: var(--ink-2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px 24px; margin-bottom: 32px;
+  display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+}
+.fit-meter-title { font-size: 0.78em; font-weight: 600; color: var(--text-3); letter-spacing: 0.08em; text-transform: uppercase; }
+.fit-gauges { display: flex; gap: 16px; flex: 1; flex-wrap: wrap; }
+.fit-gauge {
+  flex: 1; min-width: 140px;
+  background: var(--ink-3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 16px;
+}
+.gauge-label { font-size: 0.72em; color: var(--text-3); margin-bottom: 8px; }
+.gauge-bar { height: 6px; background: var(--ink-4); border-radius: 50px; margin-bottom: 6px; }
+.gauge-fill { height: 100%; border-radius: 50px; transition: width 0.6s ease; }
+.gauge-val { font-family: var(--font-mono); font-size: 0.82em; font-weight: 500; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  z-index: 500; display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.show { display: flex; }
+.modal-box {
+  background: var(--ink-2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 36px;
+  max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto;
+  animation: modalIn 0.3s ease;
+}
+@keyframes modalIn { from { opacity:0; transform: scale(0.95); } to { opacity:1; transform: scale(1); } }
+.modal-close {
+  float: right; background: none; border: none; color: var(--text-3);
+  font-size: 1.4em; cursor: pointer; margin-left: 16px;
+}
+.modal-close:hover { color: var(--text); }
+
+/* ── TYPOGRAPHY HELPERS ── */
+.tag {
+  display: inline-block; padding: 2px 9px; border-radius: 50px;
+  font-size: 0.72em; font-weight: 600; letter-spacing: 0.04em;
+}
+.tag-violet { background: var(--violet-glow); color: var(--violet-bright); border: 1px solid rgba(139,92,246,0.3); }
+.tag-teal { background: var(--teal-glow); color: var(--teal-bright); border: 1px solid rgba(20,184,166,0.3); }
+.tag-amber { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+
+/* ── RESPONSIVE ── */
+/* ── PRODUCT-MARKET FIT MODULE ── */
+.pmf-module {
+  background: var(--ink-2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 36px; margin-bottom: 32px;
+  position: relative; overflow: hidden;
+}
+.pmf-module::before {
+  content: ''; position: absolute; top: -80px; left: -80px;
+  width: 260px; height: 260px;
+  background: radial-gradient(circle, rgba(20,184,166,0.12), transparent);
+  border-radius: 50%;
+}
+.pmf-module::after {
+  content: ''; position: absolute; bottom: -80px; right: -60px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(132,204,22,0.08), transparent);
+  border-radius: 50%;
+}
+.pmf-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap; margin-bottom: 14px; position: relative;
+}
+.pmf-title {
+  font-family: var(--font-display); font-size: 1.6em; font-weight: 700;
+  background: linear-gradient(90deg, var(--teal-bright), var(--lime));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.pmf-sub { font-size: 0.85em; color: var(--text-3); margin-top: 6px; max-width: 580px; line-height: 1.6; }
+.pmf-sources { font-size: 0.76em; color: var(--text-3); margin-bottom: 4px; position: relative; }
+
+.pmf-body {
+  display: grid; grid-template-columns: 200px 1fr; gap: 32px;
+  margin-top: 22px; position: relative;
+}
+
+.pmf-ring-col { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.pmf-ring-wrap { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
+.pmf-ring-svg { width: 160px; height: 160px; transform: rotate(-90deg); display: block; }
+.pmf-ring-track { fill: none; stroke: var(--ink-4); stroke-width: 12; }
+.pmf-ring-fill { fill: none; stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(.4,0,.2,1), stroke 0.4s ease; }
+.pmf-ring-center {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.pmf-ring-score { font-family: var(--font-mono); font-size: 2.1em; font-weight: 700; line-height: 1; color: var(--text-3); transition: color 0.4s ease; }
+.pmf-ring-max { font-size: 0.7em; color: var(--text-3); margin-top: 3px; }
+
+.pmf-verdict-badge {
+  font-size: 0.78em; font-weight: 600; padding: 6px 16px; border-radius: 50px;
+  border: 1px solid var(--border); color: var(--text-3); background: var(--ink-3);
+  text-align: center; transition: all 0.3s ease;
+}
+.pmf-tier-strong { color: var(--teal-bright); border-color: rgba(20,184,166,0.35); background: var(--teal-glow); }
+.pmf-tier-emerging { color: var(--sky); border-color: rgba(56,189,248,0.35); background: var(--sky-glow); }
+.pmf-tier-early { color: var(--amber); border-color: rgba(245,158,11,0.35); background: var(--amber-glow); }
+.pmf-tier-none { color: #fb7185; border-color: rgba(244,63,94,0.35); background: var(--rose-glow); }
+
+.pmf-detail-col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.pmf-subscores { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 14px 18px; }
+.pmf-subscore-label { font-size: 0.7em; color: var(--text-3); margin-bottom: 8px; }
+.pmf-subscore-val { font-family: var(--font-mono); font-size: 0.78em; color: var(--text-2); margin-top: 4px; }
+
+.pmf-narrative {
+  font-size: 0.88em; color: var(--text-2); line-height: 1.75;
+  background: var(--ink-3); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+}
+
+.pmf-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.pmf-col { background: var(--ink-3); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.pmf-col-title { font-size: 0.72em; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-2); margin-bottom: 10px; }
+.pmf-col-strength .pmf-col-title { color: var(--teal-bright); }
+.pmf-col-risk .pmf-col-title { color: #fb7185; }
+.pmf-col ul, .pmf-actions-block ol { padding-left: 18px; display: flex; flex-direction: column; gap: 7px; }
+.pmf-col li, .pmf-actions-block li { font-size: 0.83em; color: var(--text-2); line-height: 1.6; }
+
+.pmf-actions-block { background: var(--ink-3); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.pmf-actions-block .pmf-col-title { color: var(--violet-bright); }
+
+@media (max-width: 820px) {
+  .pmf-body { grid-template-columns: 1fr; }
+  .pmf-cols { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 1024px) {
+  .canvas-layout { grid-template-columns: 1fr; }
+  .fit-connector { display: none; }
+}
+@media (max-width: 640px) {
+  .main-wrap { padding: 16px; }
+  .header { padding: 0 16px; }
+  .agent-bar { padding: 10px 16px; }
+  .synth-btn-primary { flex: auto; }
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--ink-4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--surface-2); }
+
+/* ── WORKSHOP FACILITATION MODULE ── */
+.workshop-module {
+  background: var(--ink-2);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 36px;
+  margin-bottom: 32px; position: relative; overflow: hidden;
+}
+.workshop-module::before {
+  content: '';
+  position: absolute; top: -80px; left: -80px;
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(245,158,11,0.06), transparent);
+  border-radius: 50%; pointer-events: none;
+}
+.workshop-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 28px; flex-wrap: wrap; gap: 16px;
+}
+.workshop-title-block { display: flex; align-items: center; gap: 14px; }
+.workshop-icon {
+  width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--amber-dim), var(--amber));
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+  box-shadow: 0 0 24px rgba(245,158,11,0.3);
+}
+.workshop-title { font-family: var(--font-display); font-size: 1.5em; font-weight: 700; color: var(--amber); }
+.workshop-sub { font-size: 0.82em; color: var(--text-3); margin-top: 4px; }
+
+/* Workshop Tabs */
+.wk-tabs {
+  display: flex; gap: 4px; background: var(--ink-3);
+  border: 1px solid var(--border); border-radius: 12px; padding: 4px; margin-bottom: 24px; flex-wrap: wrap;
+}
+.wk-tab {
+  padding: 9px 18px; border-radius: 9px; border: none;
+  font-family: var(--font-body); font-size: 0.82em; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; color: var(--text-3); background: none;
+  display: flex; align-items: center; gap: 7px;
+}
+.wk-tab.active {
+  background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.1));
+  color: var(--amber); border: 1px solid rgba(245,158,11,0.3);
+}
+.wk-tab:hover:not(.active) { color: var(--text-2); background: var(--ink-4); }
+
+.wk-panel { display: none; }
+.wk-panel.active { display: block; animation: fadeSlide 0.3s ease; }
+
+/* Timer */
+.timer-display {
+  font-family: var(--font-mono); font-size: 3.5em; font-weight: 500;
+  color: var(--amber); text-align: center; letter-spacing: 0.08em;
+  padding: 16px 0; text-shadow: 0 0 40px rgba(245,158,11,0.3);
+}
+.timer-display.warning { color: var(--rose); text-shadow: 0 0 40px rgba(244,63,94,0.4); }
+.timer-controls {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px;
+}
+.timer-btn {
+  padding: 10px 22px; border-radius: 10px; border: none;
+  font-family: var(--font-body); font-size: 0.85em; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 7px;
+}
+.timer-btn-start { background: linear-gradient(135deg,var(--amber-dim),var(--amber)); color: #0a0b0f; }
+.timer-btn-start:hover { opacity:0.9; transform:translateY(-1px); }
+.timer-btn-ghost { background: var(--ink-3); color:var(--text-2); border:1px solid var(--border); }
+.timer-btn-ghost:hover { background:var(--ink-4); }
+.timer-presets {
+  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;
+}
+.preset-btn {
+  padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(245,158,11,0.25);
+  background: var(--amber-glow); color: var(--amber);
+  font-size: 0.78em; font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.preset-btn:hover { background: rgba(245,158,11,0.2); }
+.preset-btn.active-preset { background: rgba(245,158,11,0.25); border-color: var(--amber); }
+
+/* Phases */
+.phase-track {
+  display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px;
+}
+.phase-card {
+  flex: 1; min-width: 130px;
+  background: var(--ink-3); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px; cursor: pointer; transition: all 0.2s; text-align: center;
+}
+.phase-card:hover { border-color: rgba(245,158,11,0.3); }
+.phase-card.active-phase {
+  border-color: var(--amber); background: var(--amber-glow);
+  box-shadow: 0 0 20px rgba(245,158,11,0.1);
+}
+.phase-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--ink-4); color: var(--text-3);
+  font-size: 0.8em; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 8px;
+}
+.phase-card.active-phase .phase-num { background: var(--amber); color: #0a0b0f; }
+.phase-card.done-phase .phase-num { background: var(--teal-glow); color: var(--teal-bright); border: 1px solid rgba(20,184,166,0.4); }
+.phase-name { font-size: 0.8em; font-weight: 600; color: var(--text-2); }
+.phase-card.active-phase .phase-name { color: var(--amber); }
+.phase-dur { font-size: 0.7em; color: var(--text-3); margin-top: 4px; }
+
+/* Facilitator notes */
+.facilitator-note {
+  background: var(--ink-3); border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 12px; padding: 18px 20px; margin-bottom: 14px;
+}
+.fn-label {
+  font-size: 0.7em; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+.fn-content { font-size: 0.85em; color: var(--text-2); line-height: 1.75; }
+.fn-content ul { padding-left: 16px; }
+.fn-content li { margin-bottom: 5px; }
+
+/* Polling / Voting */
+.poll-card {
+  background: var(--ink-3); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px; margin-bottom: 14px;
+}
+.poll-question { font-weight: 600; color: var(--text); margin-bottom: 14px; font-size: 0.92em; }
+.poll-options { display: flex; flex-direction: column; gap: 8px; }
+.poll-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 9px;
+  background: var(--ink-4); border: 1px solid var(--border);
+  cursor: pointer; transition: all 0.2s;
+}
+.poll-option:hover { border-color: rgba(139,92,246,0.4); background: var(--ink-3); }
+.poll-option.voted { border-color: var(--violet); background: var(--violet-glow); }
+.poll-bar-wrap { flex: 1; }
+.poll-bar-track { height: 6px; background: var(--ink); border-radius: 50px; margin-top: 4px; }
+.poll-bar-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--violet), var(--teal)); transition: width 0.4s ease; }
+.poll-label { font-size: 0.82em; color: var(--text-2); }
+.poll-votes { font-family: var(--font-mono); font-size: 0.78em; color: var(--violet-bright); min-width: 30px; text-align: right; }
+
+/* AI Facilitator */
+.ai-prompt-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.ai-prompt-select {
+  flex: 1; min-width: 200px;
+  background: var(--ink-3); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 14px; color: var(--text); font-family: var(--font-body); font-size: 0.85em;
+  cursor: pointer;
+}
+.ai-prompt-select:focus { outline: none; border-color: rgba(245,158,11,0.4); }
+.ai-prompt-select option { background: var(--ink-3); }
+.wk-out {
+  background: var(--ink-3); border: 1px solid rgba(245,158,11,0.15);
+  border-radius: 12px; padding: 20px; display: none;
+  animation: fadeSlide 0.3s ease;
+}
+.wk-out.show { display: block; }
+
+/* Insight wall */
+.insight-input-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.insight-input {
+  flex: 1; background: var(--ink-3); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 14px; color: var(--text); font-family: var(--font-body); font-size: 0.85em;
+}
+.insight-input:focus { outline: none; border-color: rgba(245,158,11,0.4); }
+.insight-wall { display: flex; flex-wrap: wrap; gap: 10px; min-height: 80px; }
+.insight-sticky {
+  background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.25);
+  border-radius: 10px; padding: 10px 14px;
+  font-size: 0.82em; color: var(--text-2); line-height: 1.5;
+  max-width: 220px; position: relative; cursor: default;
+  animation: fadeSlide 0.2s ease;
+}
+.insight-del {
+  position: absolute; top: 4px; right: 6px;
+  background: none; border: none; color: var(--text-3);
+  cursor: pointer; font-size: 0.9em; line-height: 1;
+}
+.insight-del:hover { color: var(--rose); }
+
+/* Voting dots on insights */
+.insight-votes {
+  margin-top: 8px; display: flex; align-items: center; gap: 6px;
+}
+.dot-vote {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: rgba(139,92,246,0.3); border: 1px solid rgba(139,92,246,0.5);
+  cursor: pointer; transition: all 0.15s;
+}
+.dot-vote.active { background: var(--violet); box-shadow: 0 0 6px rgba(139,92,246,0.6); }
+.dot-count { font-family: var(--font-mono); font-size: 0.72em; color: var(--violet-bright); }
+
+/* code-like highlights in responses */
+.agent-response-body code {
+  font-family: var(--font-mono); font-size: 0.85em;
+  background: var(--ink-3); padding: 1px 6px; border-radius: 4px; color: var(--teal-bright);
+}
+.agent-response-body ul { padding-left: 16px; margin: 6px 0; }
+.agent-response-body li { margin-bottom: 4px; }
+.agent-response-body h4 { font-size: 0.9em; color: var(--text); margin-bottom: 6px; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">◈</div>
+      <div class="logo-text">
+        <div class="logo-name">Karllestone Capital</div>
+        <div class="logo-sub">Strategic Intelligence Canvas</div>
+      </div>
+    </div>
+    <div class="header-center">
+      <button class="mode-btn active" onclick="setMode('canvas',this)">Value Proposition</button>
+      <button class="mode-btn" onclick="setMode('bmc',this)">Business Model</button>
+      <button class="mode-btn" onclick="setMode('lean',this)">Lean Canvas</button>
+    </div>
+    <div class="header-actions">
+      <button class="hbtn hbtn-ghost" onclick="saveProject()">⬇ Save</button>
+      <button class="hbtn hbtn-ghost" onclick="loadProject()">⬆ Load</button>
+      <button class="hbtn hbtn-ghost" onclick="showGuide()">? Guide</button>
+      <button class="hbtn hbtn-primary" onclick="exportFull()">↗ Export</button>
+    </div>
+  </div>
+</header>
+
+<!-- AGENT STATUS BAR -->
+<div class="agent-bar">
+  <div class="agent-bar-inner">
+    <span class="agent-bar-label">Active Agents</span>
+    <div class="agent-pill agent-socrates" title="Asks deep Socratic questions to challenge assumptions">
+      <div class="agent-dot"></div>Socrates · Questioner
+    </div>
+    <div class="agent-pill agent-strategist" title="Frameworks strategic analysis with business models">
+      <div class="agent-dot"></div>Strategist · Framer
+    </div>
+    <div class="agent-pill agent-devils" title="Challenges claims and exposes blind spots">
+      <div class="agent-dot"></div>Devil's Advocate
+    </div>
+    <div class="agent-pill agent-market" title="Benchmarks against real market signals">
+      <div class="agent-dot"></div>Market Intel
+    </div>
+    <div class="agent-pill agent-vc" title="Evaluates the canvas like an investor — evidence over assertion, no unsupported upside">
+      <div class="agent-dot"></div>VC Diligence
+    </div>
+    <div class="agent-pill agent-synthesis" title="Synthesizes all agent outputs into actionable insight">
+      <div class="agent-dot"></div>Synthesis · Director
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- MODEL SELECTOR -->
+  <div class="section-label">Business Model Context</div>
+  <div class="model-grid" id="model-grid">
+    <div class="model-card active" data-model="subscription" style="--card-color:#8b5cf6;--card-glow:rgba(139,92,246,0.08);--card-shadow:rgba(139,92,246,0.25)" onclick="selectModel(this,'subscription')">
+      <span class="model-emoji">📱</span><h3>Subscription</h3><p>Recurring revenue</p>
+    </div>
+    <div class="model-card" data-model="marketplace" style="--card-color:#14b8a6;--card-glow:rgba(20,184,166,0.08);--card-shadow:rgba(20,184,166,0.25)" onclick="selectModel(this,'marketplace')">
+      <span class="model-emoji">🏪</span><h3>Marketplace</h3><p>Two-sided platform</p>
+    </div>
+    <div class="model-card" data-model="saas" style="--card-color:#38bdf8;--card-glow:rgba(56,189,248,0.08);--card-shadow:rgba(56,189,248,0.25)" onclick="selectModel(this,'saas')">
+      <span class="model-emoji">☁️</span><h3>SaaS</h3><p>Software as service</p>
+    </div>
+    <div class="model-card" data-model="freemium" style="--card-color:#f59e0b;--card-glow:rgba(245,158,11,0.08);--card-shadow:rgba(245,158,11,0.25)" onclick="selectModel(this,'freemium')">
+      <span class="model-emoji">🎁</span><h3>Freemium</h3><p>Free + premium tiers</p>
+    </div>
+    <div class="model-card" data-model="ecommerce" style="--card-color:#f43f5e;--card-glow:rgba(244,63,94,0.08);--card-shadow:rgba(244,63,94,0.25)" onclick="selectModel(this,'ecommerce')">
+      <span class="model-emoji">🛒</span><h3>E-Commerce</h3><p>Direct to consumer</p>
+    </div>
+    <div class="model-card" data-model="fintech" style="--card-color:#84cc16;--card-glow:rgba(132,204,22,0.08);--card-shadow:rgba(132,204,22,0.25)" onclick="selectModel(this,'fintech')">
+      <span class="model-emoji">💳</span><h3>Fintech</h3><p>Financial technology</p>
+    </div>
+    <div class="model-card" data-model="rwa" style="--card-color:#a78bfa;--card-glow:rgba(167,139,250,0.08);--card-shadow:rgba(167,139,250,0.25)" onclick="selectModel(this,'rwa')">
+      <span class="model-emoji">🏦</span><h3>RWA / Tokenization</h3><p>Real world assets</p>
+    </div>
+    <div class="model-card" data-model="consulting" style="--card-color:#2dd4bf;--card-glow:rgba(45,212,191,0.08);--card-shadow:rgba(45,212,191,0.25)" onclick="selectModel(this,'consulting')">
+      <span class="model-emoji">🧠</span><h3>Consulting</h3><p>Knowledge services</p>
+    </div>
+    <div class="model-card" data-model="impact" style="--card-color:#fb923c;--card-glow:rgba(251,146,60,0.08);--card-shadow:rgba(251,146,60,0.25)" onclick="selectModel(this,'impact')">
+      <span class="model-emoji">🌱</span><h3>Impact / Social</h3><p>Purpose-driven model</p>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-section">
+    <div>
+      <div class="progress-label">Canvas Progress</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:8px;">
+        <div class="progress-track" style="width:160px">
+          <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+        </div>
+        <span class="progress-count" id="prog-count">0 / 6</span>
+      </div>
+    </div>
+    <div class="progress-items" id="progress-items">
+      <div class="prog-item" id="pi-products">📋 Products</div>
+      <div class="prog-item" id="pi-gains-creators">✨ Gain Creators</div>
+      <div class="prog-item" id="pi-pain-relievers">🛡️ Pain Relievers</div>
+      <div class="prog-item" id="pi-jobs">🎯 Customer Jobs</div>
+      <div class="prog-item" id="pi-gains">📈 Gains</div>
+      <div class="prog-item" id="pi-pains">⚡ Pains</div>
+    </div>
+  </div>
+
+  <!-- FIT METER -->
+  <div class="fit-meter">
+    <div>
+      <div class="fit-meter-title">Value-Customer Fit</div>
+      <div style="font-size:0.75em;color:var(--text-3);margin-top:4px;">Run analysis to score fit</div>
+    </div>
+    <div class="fit-gauges">
+      <div class="fit-gauge">
+        <div class="gauge-label">Problem–Solution</div>
+        <div class="gauge-bar"><div class="gauge-fill" id="g1" style="width:0%;background:linear-gradient(90deg,var(--violet),var(--violet-bright))"></div></div>
+        <div class="gauge-val" id="g1v" style="color:var(--violet-bright)">—</div>
+      </div>
+      <div class="fit-gauge">
+        <div class="gauge-label">Job–Product Alignment</div>
+        <div class="gauge-bar"><div class="gauge-fill" id="g2" style="width:0%;background:linear-gradient(90deg,var(--teal),var(--teal-bright))"></div></div>
+        <div class="gauge-val" id="g2v" style="color:var(--teal-bright)">—</div>
+      </div>
+      <div class="fit-gauge">
+        <div class="gauge-label">Gain–Creator Match</div>
+        <div class="gauge-bar"><div class="gauge-fill" id="g3" style="width:0%;background:linear-gradient(90deg,var(--amber-dim),var(--amber))"></div></div>
+        <div class="gauge-val" id="g3v" style="color:var(--amber)">—</div>
+      </div>
+      <div class="fit-gauge">
+        <div class="gauge-label">Pain–Reliever Match</div>
+        <div class="gauge-bar"><div class="gauge-fill" id="g4" style="width:0%;background:linear-gradient(90deg,#e11d48,var(--rose))"></div></div>
+        <div class="gauge-val" id="g4v" style="color:#fb7185">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANVAS GRID -->
+  <div class="canvas-layout">
+
+    <!-- VALUE PROPOSITION SIDE -->
+    <div id="vp-side">
+      <div class="canvas-side-label vp-label">
+        <span style="font-size:1.2em">◈</span>
+        <div>
+          <div class="side-title vp-title">Value Proposition</div>
+          <div style="font-size:0.72em;color:var(--text-3);margin-top:2px;">What you offer</div>
+        </div>
+      </div>
+
+      <!-- Products & Services -->
+      <div class="canvas-block" id="blk-products">
+        <div class="block-accent" style="background:linear-gradient(90deg,var(--violet),var(--violet-bright))"></div>
+        <div class="block-body">
+          <div class="block-head">
+            <div class="block-title-row">
+              <div class="block-icon-wrap" style="background:var(--violet-glow);color:var(--violet-bright)">📋</div>
+              <div>
+                <div class="block-name">Products &amp; Services</div>
+                <div class="block-desc">Your core offerings that create customer value</div>
+              </div>
+            </div>
+            <span class="status-chip chip-empty" id="chip-products">Empty</span>
+          </div>
+          <textarea class="block-textarea" id="inp-products" placeholder="Describe your products/services, e.g. AI analytics platform, tokenized asset fund, consulting methodology..." oninput="onInput('products')"></textarea>
+          <div class="block-actions">
+            <button class="abtn abtn-ai" onclick="analyzeBlock('products','multi')"><span class="spin" id="s-products" style="display:none"></span>⬡ Multi-Agent</button>
+            <button class="abtn abtn-socratic" onclick="analyzeBlock('products','socratic')">☿ Socratic Q's</button>
+            <button class="abtn abtn-ghost" onclick="analyzeBlock('products','strategist')">◈ Strategist</button>
+            <button class="abtn abtn-vc" onclick="analyzeBlock('products','vc')">$ VC Diligence</button>
+            <button class="abtn abtn-danger" onclick="clearBlock('products')">✕</button>
+          </div>
+          <div class="analysis-out" id="out-products"></div>
+        </div>
+      </div>
+
+      <!-- Gain Creators -->
+      <div class="canvas-block" id="blk-gains-creators">
+        <div class="block-accent" style="background:linear-gradient(90deg,#7c3aed,var(--violet))"></div>
+        <div class="block-body">
+          <div class="block-head">
+            <div class="block-title-row">
+              <div class="block-icon-wrap" style="background:rgba(167,139,250,0.12);color:#a78bfa">✨</div>
+              <div>
+                <div class="block-name">Gain Creators</div>
+                <div class="block-desc">How you create outcomes customers want</div>
+              </div>
+            </div>
+            <span class="status-chip chip-empty" id="chip-gains-creators">Empty</span>
+          </div>
+          <textarea class="block-textarea" id="inp-gains-creators" placeholder="How do you create gains? e.g. faster settlement, fractional access, higher yield, automation..." oninput="onInput('gains-creators')"></textarea>
+          <div class="block-actions">
+            <button class="abtn abtn-ai" onclick="analyzeBlock('gains-creators','multi')"><span class="spin" id="s-gains-creators" style="display:none"></span>⬡ Multi-Agent</button>
+            <button class="abtn abtn-socratic" onclick="analyzeBlock('gains-creators','socratic')">☿ Socratic Q's</button>
+            <button class="abtn abtn-ghost" onclick="analyzeBlock('gains-creators','devils')">⚔ Devil's Advocate</button>
+            <button class="abtn abtn-danger" onclick="clearBlock('gains-creators')">✕</button>
+          </div>
+          <div class="analysis-out" id="out-gains-creators"></div>
+        </div>
+      </div>
+
+      <!-- Pain Relievers -->
+      <div class="canvas-block" id="blk-pain-relievers">
+        <div class="block-accent" style="background:linear-gradient(90deg,var(--rose),#fb7185)"></div>
+        <div class="block-body">
+          <div class="block-head">
+            <div class="block-title-row">
+              <div class="block-icon-wrap" style="background:var(--rose-glow);color:#fb7185">🛡️</div>
+              <div>
+                <div class="block-name">Pain Relievers</div>
+                <div class="block-desc">How you eliminate customer frustrations</div>
+              </div>
+            </div>
+            <span class="status-chip chip-empty" id="chip-pain-relievers">Empty</span>
+          </div>
+          <textarea class="block-textarea" id="inp-pain-relievers" placeholder="How do you relieve pains? e.g. remove compliance burden, eliminate manual processes, reduce cost..." oninput="onInput('pain-relievers')"></textarea>
+          <div class="block-actions">
+            <button class="abtn abtn-ai" onclick="analyzeBlock('pain-relievers','multi')"><span class="spin" id="s-pain-relievers" style="display:none"></span>⬡ Multi-Agent</button>
+            <button class="abtn abtn-socratic" onclick="analyzeBlock('pain-relievers','socratic')">☿ Socratic Q's</button>
+            <button class="abtn abtn-ghost" onclick="analyzeBlock('pain-relievers','market')">◉ Market Intel</button>
+            <button class="abtn abtn-danger" onclick="clearBlock('pain-relievers')">✕</button>
+          </div>
+          <div class="analysis-out" id="out-pain-relievers"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FIT CONNECTOR -->
+    <div class="fit-connector">
+      <div class="fit-line"></div>
+      <div class="fit-circle" onclick="runFitAnalysis()" title="Run fit analysis">⇌</div>
+      <div class="fit-line"></div>
+    </div>
+
+    <!-- CUSTOMER SIDE -->
+    <div id="cs-side">
+      <div class="canvas-side-label cs-label">
+        <span style="font-size:1.2em">◉</span>
+        <div>
+          <div class="side-title cs-title">Customer Segment</div>
+          <div style="font-size:0.72em;color:var(--text-3);margin-top:2px;">Who you serve</div>
+        </div>
+      </div>
+
+      <!-- Customer Jobs -->
+      <div class="canvas-block" id="blk-jobs">
+        <div class="block-accent" style="background:linear-gradient(90deg,var(--teal),var(--teal-bright))"></div>
+        <div class="block-body">
+          <div class="block-head">
+            <div class="block-title-row">
+              <div class="block-icon-wrap" style="background:var(--teal-glow);color:var(--teal-bright)">🎯</div>
+              <div>
+                <div class="block-name">Customer Jobs</div>
+                <div class="block-desc">Tasks, goals, and problems customers have</div>
+              </div>
+            </div>
+            <span class="status-chip chip-empty" id="chip-jobs">Empty</span>
+          </div>
+          <textarea class="block-textarea" id="inp-jobs" placeholder="What are customers trying to do? e.g. generate yield, access liquidity, remain compliant, scale operations..." oninput="onInput('jobs')"></textarea>
+          <div class="block-actions">
+            <button class="abtn abtn-ai" onclick="analyzeBlock('jobs','multi')"><span class="spin" id="s-jobs" style="display:none"></span>⬡ Multi-Agent</button>
+            <button class="abtn abtn-socratic" onclick="analyzeBlock('jobs','socratic')">☿ Socratic Q's</button>
+            <button class="abtn abtn-ghost" onclick="analyzeBlock('jobs','strategist')">◈ Strategist</button>
+            <button class="abtn abtn-danger" onclick="clearBlock('jobs')">✕</button>
+          </div>
+          <div class="analysis-out" id="out-jobs"></div>
+        </div>
+      </div>
+
+      <!-- Customer Gains -->
+      <div class="canvas-block" id="blk-gains">
+        <div class="block-accent" style="background:linear-gradient(90deg,var(--amber-dim),var(--amber))"></div>
+        <div class="block-body">
+          <div class="block-head">
+            <div class="block-title-row">
+              <div class="block-icon-wrap" style="background:var(--amber-glow);color:var(--amber)">📈</div>
+              <div>
+                <div class="block-name">Customer Gains</div>
+                <div class="block-desc">Outcomes customers want to achieve</div>
+              </div>
+            </div>
+            <span class="status-chip chip-empty" id="chip-gains">Empty</span>
+          </div>
+          <textarea class="block-textarea" id="inp-gains" placeholder="What outcomes do customers seek? e.g. higher returns, portfolio diversification, regulatory certainty..." oninput="onInput('gains')"></textarea>
+          <div class="block-actions">
+            <button class="abtn abtn-ai" onclick="analyzeBlock('gains','multi')"><span class="spin" id="s-gains" style="display:none"></span>⬡ Multi-Agent</button>
+            <button class="abtn abtn-socratic" onclick="analyzeBlock('gains','socratic')">☿ Socratic Q's</button>
+            <button class="abtn abtn-ghost" onclick="analyzeBlock('gains','devils')">⚔ Devil's Advocate</button>
+            <button class="abtn abtn-vc" onclick="analyzeBlock('gains','vc')">$ VC Diligence</button>
+            <button class="abtn abtn-danger" onclick="clearBlock('gains')">✕</button>
+          </div>
+          <div class="analysis-out" id="out-gains"></div>
+        </div>
+      </div>
+
+      <!-- Customer Pains -->
+      <div class="canvas-block" id="blk-pains">
+        <div class="block-accent" style="background:linear-gradient(90deg,var(--sky),#7dd3fc)"></div>
+        <div class="block-body">
+          <div class="block-head">
+            <div class="block-title-row">
+              <div class="block-icon-wrap" style="background:var(--sky-glow);color:var(--sky)">⚡</div>
+              <div>
+                <div class="block-name">Customer Pains</div>
+                <div class="block-desc">Frustrations, risks and obstacles they face</div>
+              </div>
+            </div>
+            <span class="status-chip chip-empty" id="chip-pains">Empty</span>
+          </div>
+          <textarea class="block-textarea" id="inp-pains" placeholder="What pains do customers experience? e.g. slow settlement, regulatory uncertainty, high minimums, lack of transparency..." oninput="onInput('pains')"></textarea>
+          <div class="block-actions">
+            <button class="abtn abtn-ai" onclick="analyzeBlock('pains','multi')"><span class="spin" id="s-pains" style="display:none"></span>⬡ Multi-Agent</button>
+            <button class="abtn abtn-socratic" onclick="analyzeBlock('pains','socratic')">☿ Socratic Q's</button>
+            <button class="abtn abtn-ghost" onclick="analyzeBlock('pains','market')">◉ Market Intel</button>
+            <button class="abtn abtn-danger" onclick="clearBlock('pains')">✕</button>
+          </div>
+          <div class="analysis-out" id="out-pains"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPREHENSIVE ANALYSIS -->
+  <div class="synthesis-section">
+    <div class="synthesis-header">
+      <div>
+        <div class="synthesis-title">Multi-Agent Strategic Analysis</div>
+        <div class="synthesis-sub">Each agent reads and responds to the one before it — a real deliberation, not five parallel monologues</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="tag tag-violet">Sequential Chain</span>
+        <span class="tag tag-teal">Deep Reasoning</span>
+        <span class="tag tag-amber">Socratic Method</span>
+      </div>
+    </div>
+
+    <div class="agent-roster" id="agent-roster">
+      <div class="roster-agent ra-socrates selected" id="ra-socrates" onclick="toggleAgent('socrates')">
+        <span class="roster-icon">☿</span>
+        <div>
+          <div class="roster-name">Socrates</div>
+          <div class="roster-desc">Deep questioning & assumption-busting</div>
+        </div>
+      </div>
+      <div class="roster-agent ra-strategist selected" id="ra-strategist" onclick="toggleAgent('strategist')">
+        <span class="roster-icon">◈</span>
+        <div>
+          <div class="roster-name">Strategist</div>
+          <div class="roster-desc">Answers Socrates, then frames fit & moats</div>
+        </div>
+      </div>
+      <div class="roster-agent ra-devils selected" id="ra-devils" onclick="toggleAgent('devils')">
+        <span class="roster-icon">⚔</span>
+        <div>
+          <div class="roster-name">Devil's Advocate</div>
+          <div class="roster-desc">Rebuts the Strategist's specific claims</div>
+        </div>
+      </div>
+      <div class="roster-agent ra-market selected" id="ra-market" onclick="toggleAgent('market')">
+        <span class="roster-icon">◉</span>
+        <div>
+          <div class="roster-name">Market Intel</div>
+          <div class="roster-desc">Referees the Strategist/Devil's Advocate debate</div>
+        </div>
+      </div>
+      <div class="roster-agent ra-vc selected" id="ra-vc" onclick="toggleAgent('vc')">
+        <span class="roster-icon">$</span>
+        <div>
+          <div class="roster-name">VC Diligence</div>
+          <div class="roster-desc">Investor-lens review — evidence over assertion, risk-first</div>
+        </div>
+      </div>
+      <div class="roster-agent ra-synthesis selected" id="ra-synthesis" onclick="toggleAgent('synthesis')">
+        <span class="roster-icon">⬡</span>
+        <div>
+          <div class="roster-name">Synthesis Director</div>
+          <div class="roster-desc">Resolves the debate & scores the gauges</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="synth-action-row">
+      <button class="synth-btn synth-btn-primary" id="synth-btn" onclick="runComprehensive()">
+        <span class="spin" id="synth-spin" style="display:none"></span>
+        ⬡ Deploy All Agents — Full Canvas Analysis
+      </button>
+      <button class="synth-btn synth-btn-ghost" onclick="exportFull()">↗ Export Report</button>
+      <button class="synth-btn synth-btn-ghost" onclick="clearAll()">✕ Clear All</button>
+    </div>
+
+    <div class="comprehensive-out" id="comprehensive-out"></div>
+  </div>
+
+  <!-- PRODUCT-MARKET FIT MODULE -->
+  <div class="pmf-module" id="pmf-module">
+    <div class="pmf-header">
+      <div>
+        <div class="pmf-title">Product-Market Fit Verdict</div>
+        <div class="pmf-sub">The capstone read. Feeds in every filled canvas section, every per-block agent analysis, the full council deliberation, and the workshop's insight wall &amp; live polls to produce one evidence-weighted fit score — not just an average of the gauges above.</div>
+      </div>
+      <button class="synth-btn synth-btn-primary" id="pmf-run-btn" onclick="runPMFAssessment()">
+        <span class="spin" id="pmf-spin" style="display:none"></span>
+        ⬢ Assess Product-Market Fit
+      </button>
+    </div>
+
+    <div class="pmf-sources" id="pmf-sources">Fill in at least 3 canvas sections — and ideally run agent analysis or Deploy All Agents first — to unlock a grounded PMF verdict.</div>
+
+    <div class="pmf-body" id="pmf-body" style="display:none">
+      <div class="pmf-ring-col">
+        <div class="pmf-ring-wrap">
+          <svg viewBox="0 0 160 160" class="pmf-ring-svg">
+            <circle cx="80" cy="80" r="70" class="pmf-ring-track"></circle>
+            <circle cx="80" cy="80" r="70" class="pmf-ring-fill" id="pmf-ring-fill"></circle>
+          </svg>
+          <div class="pmf-ring-center">
+            <div class="pmf-ring-score" id="pmf-score">—</div>
+            <div class="pmf-ring-max">/ 100</div>
+          </div>
+        </div>
+        <div class="pmf-verdict-badge" id="pmf-verdict">Not yet assessed</div>
+      </div>
+
+      <div class="pmf-detail-col">
+        <div class="pmf-subscores" id="pmf-subscores"></div>
+        <div class="pmf-narrative" id="pmf-narrative"></div>
+        <div class="pmf-cols">
+          <div class="pmf-col pmf-col-strength">
+            <div class="pmf-col-title">✓ Strongest Signals</div>
+            <ul id="pmf-strengths"></ul>
+          </div>
+          <div class="pmf-col pmf-col-risk">
+            <div class="pmf-col-title">⚠ Biggest Gaps</div>
+            <ul id="pmf-risks"></ul>
+          </div>
+        </div>
+        <div class="pmf-actions-block">
+          <div class="pmf-col-title">→ Next Validation Steps</div>
+          <ol id="pmf-actions"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKSHOP FACILITATION MODULE -->
+  <div class="workshop-module">
+    <div class="workshop-header">
+      <div class="workshop-title-block">
+        <div class="workshop-icon">🎓</div>
+        <div>
+          <div class="workshop-title">Workshop Facilitation Suite</div>
+          <div class="workshop-sub">Timer · Phases · AI Facilitator · Insight Wall · Live Polling</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="tag tag-amber">Live Tools</span>
+        <span class="tag tag-violet">AI-Powered</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="wk-tabs">
+      <button class="wk-tab active" onclick="wkTab('timer',this)">⏱ Timer &amp; Phases</button>
+      <button class="wk-tab" onclick="wkTab('facilitator',this)">☿ AI Facilitator</button>
+      <button class="wk-tab" onclick="wkTab('insights',this)">📌 Insight Wall</button>
+      <button class="wk-tab" onclick="wkTab('polling',this)">🗳 Live Polling</button>
+      <button class="wk-tab" onclick="wkTab('notes',this)">📋 Facilitator Notes</button>
+    </div>
+
+    <!-- TIMER & PHASES PANEL -->
+    <div class="wk-panel active" id="wk-timer">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;flex-wrap:wrap">
+        <div>
+          <div class="section-label" style="margin-bottom:14px">Session Timer</div>
+          <div class="timer-display" id="timer-display">00:00</div>
+          <div class="timer-presets">
+            <button class="preset-btn" onclick="setTimerPreset(300,this)">5 min</button>
+            <button class="preset-btn" onclick="setTimerPreset(600,this)">10 min</button>
+            <button class="preset-btn active-preset" onclick="setTimerPreset(900,this)">15 min</button>
+            <button class="preset-btn" onclick="setTimerPreset(1200,this)">20 min</button>
+            <button class="preset-btn" onclick="setTimerPreset(1800,this)">30 min</button>
+          </div>
+          <div class="timer-controls">
+            <button class="timer-btn timer-btn-start" id="timer-start-btn" onclick="toggleTimer()">▶ Start</button>
+            <button class="timer-btn timer-btn-ghost" onclick="resetTimer()">↺ Reset</button>
+            <button class="timer-btn timer-btn-ghost" onclick="nextPhase()">⟶ Next Phase</button>
+          </div>
+          <div style="background:var(--ink-3);border-radius:10px;padding:14px 16px;border:1px solid var(--border)">
+            <div style="font-size:0.72em;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:8px">Current Phase</div>
+            <div id="current-phase-name" style="font-weight:600;color:var(--amber);font-size:0.95em">Select a phase →</div>
+            <div id="current-phase-goal" style="font-size:0.78em;color:var(--text-3);margin-top:4px;line-height:1.5"></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label" style="margin-bottom:14px">Workshop Phases</div>
+          <div class="phase-track" style="flex-direction:column;gap:8px" id="phase-track">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI FACILITATOR PANEL -->
+    <div class="wk-panel" id="wk-facilitator">
+      <div style="margin-bottom:16px">
+        <div class="section-label" style="margin-bottom:12px">AI Facilitation Actions</div>
+        <div class="ai-prompt-row">
+          <select class="ai-prompt-select" id="facilitator-action">
+            <option value="energize">🔥 Energize the room — start with a provocative question</option>
+            <option value="stuck">🧭 Group is stuck — help us get unstuck</option>
+            <option value="deepen">🔬 Deepen the discussion on the current section</option>
+            <option value="challenge">⚔ Challenge the group's assumptions directly</option>
+            <option value="synthesis">⬡ Synthesize what we've discussed so far</option>
+            <option value="transition">→ Transition to the next canvas section</option>
+            <option value="conflict">🤝 There's disagreement — help facilitate resolution</option>
+            <option value="closing">🏁 Close the workshop — key takeaways &amp; actions</option>
+            <option value="custom">✏️ Custom prompt...</option>
+          </select>
+          <button class="abtn abtn-ai" onclick="runFacilitator()" style="padding:10px 18px">
+            <span class="spin" id="fac-spin" style="display:none"></span>☿ Run
+          </button>
+        </div>
+        <div id="custom-prompt-wrap" style="display:none;margin-bottom:10px">
+          <textarea class="block-textarea" id="custom-fac-prompt" placeholder="Describe what you need the AI facilitator to do..." style="min-height:60px"></textarea>
+        </div>
+      </div>
+      <div class="wk-out" id="fac-out"></div>
+
+      <div style="margin-top:20px">
+        <div class="section-label" style="margin-bottom:12px">Quick Facilitation Moves</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="abtn abtn-socratic" onclick="quickFacilitate('1-2-4-all')">1-2-4-All Structure</button>
+          <button class="abtn abtn-socratic" onclick="quickFacilitate('fist-five')">Fist-to-Five Check</button>
+          <button class="abtn abtn-socratic" onclick="quickFacilitate('think-pair')">Think-Pair-Share</button>
+          <button class="abtn abtn-socratic" onclick="quickFacilitate('lean-coffee')">Lean Coffee Agenda</button>
+          <button class="abtn abtn-ghost" onclick="quickFacilitate('hmw')">HMW Reframe</button>
+          <button class="abtn abtn-ghost" onclick="quickFacilitate('pre-mortem')">Pre-Mortem Exercise</button>
+        </div>
+        <div class="wk-out" id="quick-fac-out" style="margin-top:14px"></div>
+      </div>
+    </div>
+
+    <!-- INSIGHT WALL PANEL -->
+    <div class="wk-panel" id="wk-insights">
+      <div class="section-label" style="margin-bottom:12px">Collaborative Insight Wall</div>
+      <div style="margin-bottom:10px;font-size:0.8em;color:var(--text-3)">Capture key insights, "aha" moments, and ideas from the group. Click dots to vote on importance.</div>
+      <div class="insight-input-row">
+        <input class="insight-input" id="insight-input" placeholder="Type an insight or key point... press Enter to add" onkeydown="if(event.key==='Enter')addInsight()">
+        <select class="ai-prompt-select" id="insight-category" style="max-width:160px;flex:none">
+          <option value="insight" style="background:var(--ink-3)">💡 Insight</option>
+          <option value="assumption" style="background:var(--ink-3)">⚠ Assumption</option>
+          <option value="question" style="background:var(--ink-3)">❓ Question</option>
+          <option value="action" style="background:var(--ink-3)">🎯 Action</option>
+          <option value="risk" style="background:var(--ink-3)">🔴 Risk</option>
+        </select>
+        <button class="abtn abtn-ai" onclick="addInsight()">+ Add</button>
+      </div>
+      <div class="insight-wall" id="insight-wall"></div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="abtn abtn-socratic" onclick="synthesizeInsights()"><span class="spin" id="insight-spin" style="display:none"></span>☿ AI Synthesize Insights</button>
+        <button class="abtn abtn-ghost" onclick="clearInsights()">✕ Clear Wall</button>
+      </div>
+      <div class="wk-out" id="insight-out" style="margin-top:14px"></div>
+    </div>
+
+    <!-- POLLING PANEL -->
+    <div class="wk-panel" id="wk-polling">
+      <div class="section-label" style="margin-bottom:12px">Live Workshop Polls</div>
+      <div style="font-size:0.8em;color:var(--text-3);margin-bottom:16px">Click any option to vote. Results update in real-time.</div>
+
+      <div class="poll-card" id="poll-1">
+        <div class="poll-question">How clear is the customer pain point currently defined?</div>
+        <div class="poll-options" id="poll-1-opts">
+          <div class="poll-option" onclick="vote(1,0)"><span class="poll-label">Crystal clear</span><div class="poll-bar-wrap"><div class="poll-bar-track"><div class="poll-bar-fill" id="pb-1-0" style="width:0%"></div></div></div><span class="poll-votes" id="pv-1-0">0</span></div>
+          <div class="poll-option" onclick="vote(1,1)"><span class="poll-label">Somewhat clear</span><div class="poll-bar-wrap"><div class="poll-bar-track"><div class="poll-bar-fill" id="pb-1-1" style="width:0%"></div></div></div><span class="poll-votes" id="pv-1-1">0</span></div>
+          <div class="poll-option" onclick="vote(1,2)"><span class="poll-label">Needs work</span><div class="poll-bar-wrap"><div class="poll-bar-track"><div class="poll-bar-fill" id="pb-1-2" style="width:0%"></div></div></div><span class="poll-votes" id="pv-1-2">0</span></div>
+          <div class="poll-option" onclick="vote(1,3)"><span class="poll-label">Very unclear</span><div class="poll-bar-wrap"><div class="poll-bar-track"><div class="poll-bar-fill" id="pb-1-3" style="width:0%"></div></div></div><span class="poll-votes" id="pv-1-3">0</span></div>
+        </div>
+      </div>
+
+      <div class="poll-card" id="poll-2">
+        <div class="poll-question">How strong is our differentiation from existing solutions?</div>
+        <div class="poll-options" id="poll-2-opts">
+          <div class="poll-option" onclick="vote(2,0)"><span class="poll-label">Clearly differentiated</span><div class="poll-bar-wrap"><div class="poll-bar-track"><div class="poll-bar-fill" id="pb-2-0" style="width:0%"></div></div></div><span class="poll-votes" id="pv-2-0">0</span></div>
+          <div class="poll-option" onclick="vote(2,1)"><span class="poll-label">Somewhat different</span><div class="poll-bar-wrap"><div class="poll-bar-track"><div class="poll-bar-fill" id="pb-2-1" style="width:0%"></div></div></div><span class="poll-votes" id="pv-2-1">0</span></div>
+          <div class="poll-option" onclick="vote(2,2)"><span class="poll-label">Similar to competitors</span><div class="poll-bar-wrap"><div class="poll-bar-track"><div class="poll-bar-fill" id="pb-2-2" style="width:0%"></div></div></div><span class="poll-votes" id="pv-2-2">0</span></div>
+          <div class="poll-option" onclick="vote(2,3)"><span class="poll-label">Not differentiated</span><div class="poll-bar-wrap"><div class="poll-bar-track"><div class="poll-bar-fill" id="pb-2-3" style="width:0%"></div></div></div><span class="poll-votes" id="pv-2-3">0</span></div>
+        </div>
+      </div>
+
+      <div class="poll-card" id="poll-3">
+        <div class="poll-question">What's the biggest risk to this value proposition?</div>
+        <div class="poll-options" id="poll-3-opts">
+          <div class="poll-option" onclick="vote(3,0)"><span class="poll-label">Market timing</span><div class="poll-bar-wrap"><div class="poll-bar-track"><div class="poll-bar-fill" id="pb-3-0" style="width:0%"></div></div></div><span class="poll-votes" id="pv-3-0">0</span></div>
+          <div class="poll-option" onclick="vote(3,1)"><span class="poll-label">Customer adoption</span><div class="poll-bar-wrap"><div class="poll-bar-track"><div class="poll-bar-fill" id="pb-3-1" style="width:0%"></div></div></div><span class="poll-votes" id="pv-3-1">0</span></div>
+          <div class="poll-option" onclick="vote(3,2)"><span class="poll-label">Competition</span><div class="poll-bar-wrap"><div class="poll-bar-track"><div class="poll-bar-fill" id="pb-3-2" style="width:0%"></div></div></div><span class="poll-votes" id="pv-3-2">0</span></div>
+          <div class="poll-option" onclick="vote(3,3)"><span class="poll-label">Regulatory / compliance</span><div class="poll-bar-wrap"><div class="poll-bar-track"><div class="poll-bar-fill" id="pb-3-3" style="width:0%"></div></div></div><span class="poll-votes" id="pv-3-3">0</span></div>
+        </div>
+      </div>
+
+      <button class="abtn abtn-ghost" onclick="resetPolls()" style="margin-top:4px">↺ Reset All Polls</button>
+    </div>
+
+    <!-- FACILITATOR NOTES PANEL -->
+    <div class="wk-panel" id="wk-notes">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex-wrap:wrap">
+        <div>
+          <div class="section-label" style="margin-bottom:12px">Opening (5–10 min)</div>
+          <div class="facilitator-note">
+            <div class="fn-label">☿ Ice Breaker Prompt</div>
+            <div class="fn-content">Ask participants: <em>"In one sentence, describe the biggest problem your target customer faces that keeps them up at night."</em> Go around the room. Note divergences — they signal different mental models.</div>
+          </div>
+          <div class="facilitator-note">
+            <div class="fn-label">📋 Set the Stage</div>
+            <div class="fn-content"><ul>
+              <li>Explain the Value Proposition Canvas structure</li>
+              <li>Clarify: VP side = what you offer, CS side = who you serve</li>
+              <li>Ground rule: No judgment during ideation, challenge during review</li>
+              <li>Use timed rounds (10–15 min per section)</li>
+            </ul></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label" style="margin-bottom:12px">During Session</div>
+          <div class="facilitator-note">
+            <div class="fn-label">⚠ Watch For</div>
+            <div class="fn-content"><ul>
+              <li><strong>Feature-first thinking</strong> — redirect to customer outcomes</li>
+              <li><strong>Assumption stacking</strong> — ask "how do we know this?"</li>
+              <li><strong>Groupthink</strong> — use silent writing before discussion</li>
+              <li><strong>HiPPO effect</strong> — structure equal voice, time-box input</li>
+            </ul></div>
+          </div>
+          <div class="facilitator-note">
+            <div class="fn-label">🔥 Energy Dip? Try This</div>
+            <div class="fn-content">Run a <em>Crazy 8s</em> round: 8 ideas in 8 minutes, individually. Then share only the top 2 each. Instantly reactivates creative energy and surfaces hidden ideas.</div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label" style="margin-bottom:12px">Closing (10–15 min)</div>
+          <div class="facilitator-note">
+            <div class="fn-label">🏁 Closing Protocol</div>
+            <div class="fn-content"><ul>
+              <li>Run the Multi-Agent full analysis</li>
+              <li>Ask: "What's the one thing that changed in your thinking?"</li>
+              <li>Identify top 3 assumptions to validate this week</li>
+              <li>Assign ownership of next steps</li>
+              <li>Export report for distribution</li>
+            </ul></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label" style="margin-bottom:12px">Socratic Question Bank</div>
+          <div class="facilitator-note">
+            <div class="fn-label">☿ Power Questions</div>
+            <div class="fn-content"><ul>
+              <li>What evidence would change your mind about this?</li>
+              <li>Who benefits if this fails?</li>
+              <li>What would a skeptical investor say first?</li>
+              <li>If you removed this from the canvas, what breaks?</li>
+              <li>What are we not saying out loud?</li>
+              <li>What does the customer do instead of using us today?</li>
+            </ul></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toasts"></div>
+
+<!-- GUIDE MODAL -->
+<div class="modal-overlay" id="guide-modal" onclick="closeGuide(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('guide-modal').classList.remove('show')">✕</button>
+    <div style="font-family:var(--font-display);font-size:1.6em;font-weight:700;margin-bottom:6px;background:linear-gradient(90deg,var(--violet-bright),var(--teal-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Workshop Guide</div>
+    <div style="font-size:0.82em;color:var(--text-3);margin-bottom:24px;">How to use the Multi-Agent Strategic Intelligence Canvas</div>
+
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="background:var(--ink-3);border-radius:12px;padding:16px;border:1px solid var(--border)">
+        <div style="color:var(--violet-bright);font-weight:600;margin-bottom:8px;font-size:0.9em">Step 1 — Select Business Model</div>
+        <div style="font-size:0.82em;color:var(--text-2);line-height:1.7">Choose the business model that best matches your idea. This context guides all agents to give model-specific insights. You can also use this for any idea — consultancy, startup, NGO, fintech, etc.</div>
+      </div>
+      <div style="background:var(--ink-3);border-radius:12px;padding:16px;border:1px solid var(--border)">
+        <div style="color:var(--amber);font-weight:600;margin-bottom:8px;font-size:0.9em">Step 2 — Fill the Canvas</div>
+        <div style="font-size:0.82em;color:var(--text-2);line-height:1.7">Fill in as many sections as you can. Even rough bullet points work. The agents reason about what you write, so quality of input affects quality of insight. Use the Socratic Q's button to get probing questions that help you think deeper about each section.</div>
+      </div>
+      <div style="background:var(--ink-3);border-radius:12px;padding:16px;border:1px solid var(--border)">
+        <div style="color:var(--teal-bright);font-weight:600;margin-bottom:8px;font-size:0.9em">Step 3 — Run Multi-Agent Analysis</div>
+        <div style="font-size:0.82em;color:var(--text-2);line-height:1.7">Click <strong style="color:var(--text)">⬡ Multi-Agent</strong> on any block to watch a real deliberation: Socrates questions it, the Strategist answers those exact questions, and the Devil's Advocate rebuts the Strategist's specific claims — each agent reads what the last one actually said. Use <strong style="color:var(--text)">☿ Socratic Q's</strong> for standalone questions. Deploy the full team via <strong style="color:var(--text)">Deploy All Agents</strong> to run that same chain across the whole canvas, ending with a Synthesis Director that resolves the debate and scores the fit gauges from the actual discussion.</div>
+      </div>
+      <div style="background:var(--ink-3);border-radius:12px;padding:16px;border:1px solid var(--border)">
+        <div style="color:#fb7185;font-weight:600;margin-bottom:8px;font-size:0.9em">Agent Roles</div>
+        <div style="font-size:0.82em;color:var(--text-2);line-height:1.8">
+          <b style="color:var(--amber)">☿ Socrates</b> — Asks probing questions to challenge assumptions<br>
+          <b style="color:var(--violet-bright)">◈ Strategist</b> — Answers Socrates' questions, then frames strategy and fit<br>
+          <b style="color:#fb7185">⚔ Devil's Advocate</b> — Rebuts the Strategist's specific claims, not a strawman<br>
+          <b style="color:var(--sky)">◉ Market Intel</b> — Referees the Strategist/Devil's Advocate debate with outside evidence<br>
+          <b style="color:var(--lime)">$ VC Diligence</b> — Investor-lens review: evidence over assertion, risk-first, fact-based scenario questions<br>
+          <b style="color:var(--teal-bright)">⬡ Synthesis</b> — Resolves the actual debate into a plan and scores the fit gauges
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+let selectedModel = 'subscription';
+let canvasData = {
+  products: '', 'gains-creators': '', 'pain-relievers': '', jobs: '', gains: '', pains: ''
+};
+let blockAnalyses = {
+  products: '', 'gains-creators': '', 'pain-relievers': '', jobs: '', gains: '', pains: ''
+};
+let comprehensiveAnalysisText = '';
+let pmfResult = null;
+let activeAgents = new Set(['socrates','strategist','devils','market','vc','synthesis']);
+
+// ── LOCAL AUTOSAVE (no accounts/backend — the browser is the only store,
+// separate from the manual JSON export/import) ──
+const LOCAL_SAVE_KEY = 'strategyflow.canvas.v1';
+let __persistTimer = null;
+function persistLocal() {
+  clearTimeout(__persistTimer);
+  __persistTimer = setTimeout(() => {
+    try {
+      localStorage.setItem(LOCAL_SAVE_KEY, JSON.stringify({ model: selectedModel, canvas: canvasData, ts: Date.now() }));
+    } catch (e) { /* storage unavailable or full — silently skip autosave */ }
+  }, 400);
+}
+function restoreLocal() {
+  let saved;
+  try { saved = JSON.parse(localStorage.getItem(LOCAL_SAVE_KEY) || 'null'); } catch (e) { return; }
+  if (!saved || !saved.canvas) return;
+  selectedModel = saved.model || selectedModel;
+  canvasData = Object.assign(canvasData, saved.canvas);
+  const modelCard = document.querySelector(`.model-card[data-model="${selectedModel}"]`);
+  if (modelCard) { document.querySelectorAll('.model-card').forEach(c => c.classList.remove('active')); modelCard.classList.add('active'); }
+  BLOCKS.forEach(b => {
+    if (canvasData[b]) { document.getElementById('inp-'+b).value = canvasData[b]; onInput(b); }
+  });
+}
+let workshopTimer = null;
+let workshopSeconds = 0;
+let workshopPhaseIdx = 0;
+
+const BLOCKS = ['products','gains-creators','pain-relievers','jobs','gains','pains'];
+const BLOCK_NAMES = {
+  products: 'Products & Services', 'gains-creators': 'Gain Creators',
+  'pain-relievers': 'Pain Relievers', jobs: 'Customer Jobs', gains: 'Customer Gains', pains: 'Customer Pains'
+};
+const PI_MAP = {
+  products: 'pi-products', 'gains-creators': 'pi-gains-creators',
+  'pain-relievers': 'pi-pain-relievers', jobs: 'pi-jobs',
+  gains: 'pi-gains', pains: 'pi-pains'
+};
+
+// Every agent should reason with awareness of the WHOLE canvas — not just
+// the single block it was asked about — so it can catch contradictions
+// and connections a block-isolated read would miss (e.g. a "Pain Reliever"
+// that doesn't actually match any stated "Customer Pain"). This is the
+// one place that context gets built, so every mode (Socratic, Strategist,
+// Devil's Advocate, Market Intel, VC Diligence, and the chain) benefits.
+function buildCanvasContext(block, currentVal) {
+  const val = currentVal !== undefined ? currentVal : canvasData[block];
+  const others = BLOCKS.filter(b => b !== block && canvasData[b] && canvasData[b].trim())
+    .map(b => `${BLOCK_NAMES[b]}: "${trimForChain(canvasData[b], 220)}"`)
+    .join(' | ');
+  let ctx = `Business model: ${selectedModel}. Section being analyzed: ${BLOCK_NAMES[block]}. Content: "${val}".`;
+  if (others) {
+    ctx += ` Rest of the canvas (use this to check consistency and connections with the section above — do not simply restate it): ${others}`;
+  }
+  return ctx;
+}
+
+// ── MODEL SELECT ──
+function selectModel(el, model) {
+  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  selectedModel = model;
+  toast(`Business model set: ${model}`, 'info');
+  persistLocal();
+}
+
+function setMode(mode, el) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  toast(`Mode: ${mode} (canvas context updated)`, 'info');
+}
+
+// ── INPUT TRACKING ──
+function onInput(block) {
+  const val = document.getElementById('inp-'+block).value;
+  canvasData[block] = val;
+  const chip = document.getElementById('chip-'+block);
+  const blk = document.getElementById('blk-'+block);
+  if (!val.trim()) {
+    chip.className = 'status-chip chip-empty'; chip.textContent = 'Empty';
+    blk.classList.remove('has-content','analyzed');
+    document.getElementById(PI_MAP[block]).className = 'prog-item';
+  } else {
+    chip.className = 'status-chip chip-filled'; chip.textContent = 'Filled';
+    blk.classList.add('has-content'); blk.classList.remove('analyzed');
+    document.getElementById(PI_MAP[block]).className = 'prog-item partial';
+  }
+  updateProgress();
+  persistLocal();
+}
+
+function updateProgress() {
+  const filled = BLOCKS.filter(b => canvasData[b].trim()).length;
+  document.getElementById('prog-fill').style.width = (filled/6*100)+'%';
+  document.getElementById('prog-count').textContent = filled+' / 6';
+}
+
+// ── AGENT TOGGLE ──
+function toggleAgent(name) {
+  const el = document.getElementById('ra-'+name);
+  if (activeAgents.has(name)) { activeAgents.delete(name); el.classList.remove('selected'); }
+  else { activeAgents.add(name); el.classList.add('selected'); }
+}
+
+// ── API CALL (backend proxy — the server holds the Anthropic API key,
+// the browser never sees it) ──
+async function callClaude(messages, maxTokens=1200) {
+  const input = (messages || []).map(m => m.content).filter(Boolean).join('\n\n');
+  let res;
+  try {
+    res = await fetch('/api/agent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: input, maxTokens })
+    });
+  } catch (e) {
+    throw new Error('Could not reach the AI service — check your connection and try again.');
+  }
+  if (!res.ok) {
+    let msg = 'AI request failed';
+    try { const body = await res.json(); if (body && body.error) msg = body.error; } catch (_) {}
+    if (res.status === 429 && msg === 'AI request failed') msg = 'Too many requests — wait a moment and try again.';
+    throw new Error(msg);
+  }
+  const { text } = await res.json();
+  if (!text) throw new Error('Claude didn\'t return a response — try again.');
+  return text;
+}
+
+// Small helper: strip an agent's own header/preamble echoes so chained context stays lean
+function trimForChain(text, maxChars=1400) {
+  const t = (text||'').trim();
+  return t.length > maxChars ? t.slice(0, maxChars) + '…' : t;
+}
+
+// ── VC DILIGENCE AGENT ──
+// Shared prompt builder so the standalone button, the per-block chain, and
+// the full council all apply the exact same investor rules and fact-based
+// scenario questions rather than three drifting variants of "be a VC."
+function buildVCPrompt(context, priorDebate) {
+  return `You are a Venture Capital Diligence Agent reviewing a ${selectedModel} business model. You evaluate the way an investor actually does — with rigor, skepticism, and a strict requirement for evidence, not startup optimism.
+
+Context: ${context}
+${priorDebate ? `\nPrior workshop deliberation to account for:\n${priorDebate}\n` : ''}
+You must follow these rules:
+1. Evidence over assertion — flag any claim of traction, demand, or differentiation that isn't backed by a verifiable fact or source.
+2. No speculative upside without a stated basis — any growth, market-size, or revenue claim must have its assumptions made explicit so they can be challenged.
+3. Comparable-driven benchmarking — judge claims against real comparable companies or funding rounds, not generic industry optimism.
+4. Risk-first framing — state the most likely reason this fails before any reason it could succeed.
+5. Consistency check — flag contradictions between this section and what a reasonable business model would imply elsewhere (unit economics, customer segment, go-to-market).
+
+Respond in this structure:
+**INVESTABILITY READ:** One line — would this survive a real diligence call as written?
+**UNSUPPORTED CLAIMS:** List any assertions here that lack evidence (or state "none identified" if genuinely well-evidenced)
+**MOST LIKELY FAILURE MODE:** The single most probable reason this doesn't work
+**FACT-BASED SCENARIO QUESTIONS:** Exactly 3 sharp questions a VC would ask to separate fact from narrative here, e.g. in the style of "What evidence do we have that X, beyond stated intent?" or "If [key assumption] were 30% worse, does this still work?"
+**ONE THING THAT WOULD CHANGE THE READ:** The single piece of evidence that would most improve this section's investability
+
+Under 260 words. Be specific to this content, not generic investor commentary.`;
+}
+
+// ── BLOCK ANALYSIS ──
+async function analyzeBlock(block, mode) {
+  const val = document.getElementById('inp-'+block).value.trim();
+  if (!val) { toast('Please fill in this section first', 'error'); return; }
+
+  const spinEl = document.getElementById('s-'+block);
+  const outEl = document.getElementById('out-'+block);
+  if (spinEl) { spinEl.style.display='inline-block'; }
+  outEl.classList.remove('show'); outEl.innerHTML = '';
+
+  const context = buildCanvasContext(block, val);
+
+  try {
+    let html = '';
+
+    if (mode === 'socratic') {
+      // Socratic questioning agent
+      const prompt = `You are Socrates, a master of deep questioning. A workshop participant is working on their Value Proposition Canvas.
+
+Context: ${context}
+
+Generate exactly 6 powerful Socratic questions that:
+1. Challenge underlying assumptions
+2. Probe for evidence and data
+3. Explore second and third-order consequences
+4. Surface unstated beliefs
+5. Test for logical consistency
+6. Challenge "what if" scenarios
+
+Format: Return ONLY a JSON array of 6 question strings. No preamble, no markdown, no explanation.
+Example: ["Question 1?","Question 2?","Question 3?","Question 4?","Question 5?","Question 6?"]`;
+
+      const raw = await callClaude([{role:'user',content:prompt}], 800);
+      let questions;
+      try {
+        const cleaned = raw.replace(/```json|```/g,'').trim();
+        questions = JSON.parse(cleaned);
+      } catch(e) {
+        questions = raw.split('\n').filter(l=>l.trim().endsWith('?')).slice(0,6);
+      }
+      if (!questions || !questions.length) questions = ['Could you explain the assumptions underlying this?','What evidence supports this claim?','How does this differ from what competitors offer?','What would it take for this to be wrong?','Who else benefits or is affected by this?','What are the second-order consequences?'];
+
+      html = `<div class="socratic-panel">
+        <div class="agent-response-header" style="color:var(--amber);font-size:0.75em;display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <span>☿</span> Socrates — Probing Questions for Workshop Discussion
+        </div>`;
+      questions.forEach((q,i) => {
+        html += `<div class="socratic-q">
+          <div class="q-num">${i+1}</div>
+          <div class="q-text" onclick="insertQuestion(this,'${block}')" title="Click to add as thinking prompt">${q}</div>
+        </div>`;
+      });
+      html += `</div>`;
+
+    } else if (mode === 'devils') {
+      const prompt = `You are a Devil's Advocate analyst. Be critical, specific, and sharp. Do NOT hedge excessively.
+
+Context: ${context}
+
+Provide a Devil's Advocate analysis in this exact structure:
+**CORE CHALLENGE:** (1 sentence — the single biggest flaw or risk)
+
+**3 SPECIFIC OBJECTIONS:**
+1. [Objection] — [Why it matters / evidence]
+2. [Objection] — [Why it matters / evidence]
+3. [Objection] — [Why it matters / evidence]
+
+**BLIND SPOTS DETECTED:**
+- What assumptions are being made without evidence?
+- What competing alternatives threaten this?
+
+**THE STEELMAN TEST:** What would need to be true for this to actually work brilliantly?
+
+Keep it sharp, under 250 words.`;
+
+      const response = await callClaude([{role:'user',content:prompt}], 600);
+      html = `<div class="agent-response resp-devils">
+        <div class="agent-response-header"><span>⚔</span> Devil's Advocate — Stress Test</div>
+        <div class="agent-response-body">${formatMarkdown(response)}</div>
+      </div>`;
+
+    } else if (mode === 'market') {
+      const prompt = `You are a Market Intelligence analyst. Be data-informed, specific, and comparative.
+
+Context: ${context}
+
+Provide market intelligence analysis:
+**MARKET SIGNAL:** What does the market say about this?
+
+**COMPETITIVE LANDSCAPE:** Who else is doing this and how does this compare?
+
+**VALIDATION INDICATORS:**
+- What market signals validate this?
+- What signals contradict or warn against this?
+
+**BENCHMARK:** How does this perform relative to industry standards for ${selectedModel} business model?
+
+**OPPORTUNITY SIZING:** Rough estimate of addressable market/opportunity
+
+Keep concise, under 220 words.`;
+
+      const response = await callClaude([{role:'user',content:prompt}], 600);
+      html = `<div class="agent-response resp-market">
+        <div class="agent-response-header"><span>◉</span> Market Intel — Industry Signals</div>
+        <div class="agent-response-body">${formatMarkdown(response)}</div>
+      </div>`;
+
+    } else if (mode === 'strategist') {
+      const prompt = `You are a Strategic Advisor. Be frameworks-driven, precise, and action-oriented.
+
+Context: ${context}
+
+Strategic analysis:
+**STRATEGIC FRAMING:** How does this fit into the overall ${selectedModel} model architecture?
+
+**FIT ASSESSMENT:** How well does this align with customer needs? (rate 1-10 and explain)
+
+**COMPETITIVE MOAT:** What defensibility or differentiation exists here?
+
+**STRATEGIC RECOMMENDATIONS:**
+1. [Priority action]
+2. [Priority action]  
+3. [Priority action]
+
+**WATCH OUT FOR:** Top strategic risk in this section.
+
+Under 250 words. Be specific.`;
+
+      const response = await callClaude([{role:'user',content:prompt}], 600);
+      html = `<div class="agent-response resp-strategist">
+        <div class="agent-response-header"><span>◈</span> Strategist — Strategic Framework</div>
+        <div class="agent-response-body">${formatMarkdown(response)}</div>
+      </div>`;
+
+    } else if (mode === 'vc') {
+      const response = await callClaude([{role:'user',content: buildVCPrompt(context)}], 650);
+      html = `<div class="agent-response resp-vc">
+        <div class="agent-response-header"><span>$</span> VC Diligence — Investor Review</div>
+        <div class="agent-response-body">${formatMarkdown(response)}</div>
+      </div>`;
+
+    } else {
+      // multi-agent mode — a genuine SEQUENTIAL deliberation chain.
+      // Each agent reads what the previous agent actually said, so the
+      // Strategist responds to Socrates' questions and the Devil's Advocate
+      // rebuts the Strategist's specific claims — not three isolated takes.
+      outEl.innerHTML = '';
+      outEl.classList.add('show');
+
+      const stepNote = (label) => {
+        outEl.insertAdjacentHTML('beforeend', `<div class="chain-step-note" id="chain-note">${label}</div>`);
+        outEl.scrollTop = outEl.scrollHeight;
+      };
+      const clearNote = () => { const n = document.getElementById('chain-note'); if (n) n.remove(); };
+
+      // 1 — Socrates asks first
+      stepNote('☿ Socrates is probing the assumptions…');
+      const socrRaw = await callClaude([{role:'user',content:`You are Socrates. Context: ${context}. Give 4 sharp, probing Socratic questions that expose hidden assumptions in this specific content — not generic questions. Return JSON array only, no markdown. Example: ["Q1?","Q2?","Q3?","Q4?"]`}], 450);
+      let questions;
+      try { questions = JSON.parse(socrRaw.replace(/```json|```/g,'').trim()); }
+      catch(e) { questions = ['What evidence supports this claim?','Who else is affected by this decision?','What would need to be false for this to fail?','What are you assuming about the customer?']; }
+      clearNote();
+      let socrHtml = `<div class="agent-response resp-socrates">
+        <div class="agent-response-header"><span>☿</span> Socrates — Probing Questions</div>
+        <div class="agent-response-body">`;
+      (questions||[]).forEach((q,i) => { socrHtml += `<div style="padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><b style="color:var(--amber)">${i+1}.</b> ${q}</div>`; });
+      socrHtml += `</div></div>`;
+      outEl.insertAdjacentHTML('beforeend', socrHtml);
+
+      // 2 — Strategist must actually engage with Socrates' questions
+      stepNote('◈ Strategist is answering Socrates\' questions…');
+      const stratRaw = await callClaude([{role:'user',content:`You are a strategic advisor. Context: ${context}.
+
+Socrates just raised these questions in the workshop:
+${questions.map((q,i)=>`${i+1}. ${q}`).join('\n')}
+
+In ~170 words, give a strategic framing that explicitly engages with at least 2 of Socrates' questions above (say which ones), then give: Strategic fit (1 line), 2 key recommendations, 1 watch-out. Use markdown bold for headers.`}], 500);
+      const stratHtml = `<div class="agent-response resp-strategist">
+        <div class="agent-response-header"><span>◈</span> Strategist — Responds to Socrates</div>
+        <div class="agent-response-body">${formatMarkdown(stratRaw)}</div>
+      </div>`;
+      outEl.insertAdjacentHTML('beforeend', stratHtml);
+
+      // 3 — Devil's Advocate must rebut the Strategist's actual claims
+      stepNote('⚔ Devil\'s Advocate is stress-testing the Strategist\'s claims…');
+      const devilRaw = await callClaude([{role:'user',content:`You are a Devil's Advocate. Context: ${context}.
+
+The Strategist just argued:
+"${trimForChain(stratRaw, 900)}"
+
+In ~170 words, directly rebut the Strategist's specific recommendations — quote or paraphrase the exact claim you're attacking. Give: Core challenge (1 line), 2 objections aimed at the Strategist's actual points, 1 blind spot the Strategist missed. Be direct, no hedging. Use markdown bold for headers.`}], 500);
+      const devilHtml = `<div class="agent-response resp-devils">
+        <div class="agent-response-header"><span>⚔</span> Devil's Advocate — Rebuts the Strategist</div>
+        <div class="agent-response-body">${formatMarkdown(devilRaw)}</div>
+      </div>`;
+      clearNote();
+      outEl.insertAdjacentHTML('beforeend', devilHtml);
+
+      // 4 — VC Diligence runs the same investor rules against the debate so far
+      stepNote('$ VC Diligence is checking this against investor rules…');
+      const vcRaw = await callClaude([{role:'user',content: buildVCPrompt(context, `Strategist argued: "${trimForChain(stratRaw,500)}"\nDevil's Advocate countered: "${trimForChain(devilRaw,500)}"`)}], 550);
+      clearNote();
+      outEl.insertAdjacentHTML('beforeend', `<div class="agent-response resp-vc">
+        <div class="agent-response-header"><span>$</span> VC Diligence — Investor Review</div>
+        <div class="agent-response-body">${formatMarkdown(vcRaw)}</div>
+      </div>`);
+
+      // 5 — a one-line resolving note so the reader isn't left mid-argument
+      stepNote('⬡ Resolving the debate into one takeaway…');
+      const resolveRaw = await callClaude([{role:'user',content:`Context: ${context}.
+
+Socrates asked: ${questions.slice(0,2).join(' / ')}
+Strategist argued: "${trimForChain(stratRaw,500)}"
+Devil's Advocate countered: "${trimForChain(devilRaw,500)}"
+VC Diligence flagged: "${trimForChain(vcRaw,500)}"
+
+In exactly 2 sentences, resolve this debate: what should the workshop participant actually do, given the tension between the Strategist, the Devil's Advocate, and the VC's investor-lens read? Be concrete, no hedging, no headers.`}], 200);
+      clearNote();
+      outEl.insertAdjacentHTML('beforeend', `<div class="agent-response resp-synthesis">
+        <div class="agent-response-header"><span>⬡</span> Resolution</div>
+        <div class="agent-response-body">${formatMarkdown(resolveRaw)}</div>
+      </div>`);
+
+      html = outEl.innerHTML;
+    }
+
+    outEl.innerHTML = html;
+    outEl.classList.add('show');
+
+    // Store plain text for export
+    blockAnalyses[block] = outEl.innerText || outEl.textContent || html;
+
+    // update block status
+    document.getElementById('chip-'+block).className = 'status-chip chip-done';
+    document.getElementById('chip-'+block).textContent = 'Analyzed';
+    document.getElementById('blk-'+block).classList.add('analyzed');
+    document.getElementById(PI_MAP[block]).className = 'prog-item done';
+    updateProgress();
+    toast('Analysis complete', 'success');
+
+  } catch(err) {
+    outEl.innerHTML = `<div style="color:#fb7185;font-size:0.82em;padding:12px;background:var(--rose-glow);border-radius:8px;border:1px solid rgba(244,63,94,0.2)">⚠ ${err.message}</div>`;
+    outEl.classList.add('show');
+    toast('Analysis failed: '+err.message, 'error');
+  } finally {
+    if (spinEl) spinEl.style.display = 'none';
+  }
+}
+
+// ── COMPREHENSIVE ANALYSIS ──
+// Ordered pipeline — this is the sequence agents deliberate in when active.
+// Each entry knows how to build its own prompt FROM THE ACTUAL transcript
+// of what earlier agents said, and how to render its own response block.
+const AGENT_PIPELINE = [
+  {
+    key: 'socrates', icon: '☿', label: 'Socrates — Deep Questioning', cls: 'resp-socrates',
+    thinking: '☿ Socrates is interrogating the canvas…',
+    buildPrompt: (context, transcript) => `You are Socrates, questioning a Value Proposition Canvas for a ${selectedModel} business model.
+
+Canvas:
+${context}
+
+Generate 6 sharp Socratic questions specific to THIS canvas content — reference actual details from it, not generic startup questions. They should expose hidden assumptions, probe for evidence, and surface unstated beliefs across the whole canvas (not just one block). Number them 1-6, one per line, no other text.`,
+    maxTokens: 500
+  },
+  {
+    key: 'strategist', icon: '◈', label: 'Strategist — Answers Socrates', cls: 'resp-strategist',
+    thinking: '◈ Strategist is framing a response to Socrates…',
+    buildPrompt: (context, transcript) => `You are a Strategic Advisor for a ${selectedModel} business model.
+
+Canvas:
+${context}
+
+Socrates just asked the workshop these questions:
+${transcript.socrates || '(no questions available)'}
+
+Write a strategic analysis that explicitly answers at least 3 of Socrates' questions (reference them by number). Then give:
+**Value-Customer Fit Score:** X/10 — one-line reason
+**Competitive Moat:** what defensibility exists
+**Strategic Priorities:** top 3 actions, ranked
+Keep it under 260 words, specific to this canvas, not generic advice.`,
+    maxTokens: 650
+  },
+  {
+    key: 'devils', icon: '⚔', label: "Devil's Advocate — Rebuts the Strategist", cls: 'resp-devils',
+    thinking: '⚔ Devil\'s Advocate is stress-testing the Strategist\'s claims…',
+    buildPrompt: (context, transcript) => `You are a Devil's Advocate reviewing a ${selectedModel} business model.
+
+Canvas:
+${context}
+
+The Strategist just wrote:
+"${trimForChain(transcript.strategist || '(no strategist output)', 1200)}"
+
+Attack the Strategist's SPECIFIC claims above — quote or closely paraphrase what you're rebutting, don't argue with a strawman. Give:
+**Biggest Risk:** the single greatest threat to the Strategist's plan
+**3 Hard Challenges:** each one aimed at a specific claim the Strategist made
+**Assumption Audit:** 3 things assumed without evidence
+**What Would Kill This:** the failure scenario
+Under 260 words, be direct, no hedging.`,
+    maxTokens: 650
+  },
+  {
+    key: 'market', icon: '◉', label: 'Market Intel — Grounds the Debate Externally', cls: 'resp-market',
+    thinking: '◉ Market Intel is checking this against the outside world…',
+    buildPrompt: (context, transcript) => `You are a Market Intelligence analyst for a ${selectedModel} business model.
+
+Canvas:
+${context}
+
+So far in this workshop debate:
+- Strategist claimed: "${trimForChain(transcript.strategist || '', 500)}"
+- Devil's Advocate countered: "${trimForChain(transcript.devils || '', 500)}"
+
+Referee this with outside evidence. Give:
+**Market Validation:** what real market signals support or contradict the Strategist's claim
+**Competitive Landscape:** who else does this and how it compares
+**Verdict on the Debate:** does the market side more with the Strategist or the Devil's Advocate, and why
+Under 220 words.`,
+    maxTokens: 550
+  },
+  {
+    key: 'vc', icon: '$', label: 'VC Diligence — Investor Review', cls: 'resp-vc',
+    thinking: '$ VC Diligence is running the numbers like an investor would…',
+    buildPrompt: (context, transcript) => buildVCPrompt(context, `Strategist claimed: "${trimForChain(transcript.strategist || '', 500)}"\nDevil's Advocate countered: "${trimForChain(transcript.devils || '', 400)}"${transcript.market ? `\nMarket Intel found: "${trimForChain(transcript.market, 400)}"` : ''}`),
+    maxTokens: 650
+  },
+  {
+    key: 'synthesis', icon: '⬡', label: 'Synthesis Director — Resolves the Debate', cls: 'resp-synthesis',
+    thinking: '⬡ Synthesis Director is resolving the debate into an action plan…',
+    buildPrompt: (context, transcript) => `You are the Synthesis Director closing out a strategic workshop debate on a ${selectedModel} business model.
+
+Canvas:
+${context}
+
+The council's actual deliberation:
+${transcript.socrates ? `Socrates asked:\n${trimForChain(transcript.socrates,600)}\n\n` : ''}${transcript.strategist ? `Strategist argued:\n${trimForChain(transcript.strategist,700)}\n\n` : ''}${transcript.devils ? `Devil's Advocate countered:\n${trimForChain(transcript.devils,700)}\n\n` : ''}${transcript.market ? `Market Intel weighed in:\n${trimForChain(transcript.market,500)}\n\n` : ''}${transcript.vc ? `VC Diligence assessed:\n${trimForChain(transcript.vc,600)}\n\n` : ''}
+Resolve this into one integrated plan. You must actually referee the specific tension between the Strategist and the Devil's Advocate above (and the VC Diligence read, if present), not restate all sides. Give:
+**Overall Assessment:** Viable / Needs Work / Strong — 1-2 sentences resolving who was more right
+**Top 5 Recommendations:** prioritized, specific, actionable
+**30-Day Action Plan:** 3 things to do immediately
+**Canvas Gaps:** what critical sections still need more thinking
+Under 320 words.
+
+Then, on its own final line, output your numeric fit assessment in exactly this format and nothing after it:
+SCORES: {"ps":N,"jp":N,"gc":N,"pr":N}
+where each N is an integer 0-100 for: ps=Problem-Solution fit, jp=Job-Product alignment, gc=Gain-Creator match, pr=Pain-Reliever match. Base these on the actual debate above, not a guess.`,
+    maxTokens: 900
+  }
+];
+
+async function runComprehensive() {
+  const filled = BLOCKS.filter(b => canvasData[b].trim());
+  if (filled.length < 2) { toast('Fill at least 2 sections before running comprehensive analysis', 'error'); return; }
+
+  const btn = document.getElementById('synth-btn');
+  const spin = document.getElementById('synth-spin');
+  const out = document.getElementById('comprehensive-out');
+
+  btn.disabled = true; spin.style.display='inline-block';
+  out.innerHTML = '';
+  out.classList.add('show');
+
+  const context = BLOCKS.filter(b=>canvasData[b].trim()).map(b => `**${BLOCK_NAMES[b]}:** ${canvasData[b]}`).join('\n\n');
+
+  const pipeline = AGENT_PIPELINE.filter(a => activeAgents.has(a.key));
+  const transcript = {}; // key -> plain text response, used to feed later agents
+  const transcriptParts = []; // for export text
+
+  const stepNote = (label) => {
+    out.insertAdjacentHTML('beforeend', `<div class="chain-step-note" id="council-note">${label}</div>`);
+    out.scrollTop = out.scrollHeight;
+  };
+  const clearNote = () => { const n = document.getElementById('council-note'); if (n) n.remove(); };
+
+  try {
+    for (const agent of pipeline) {
+      stepNote(agent.thinking);
+      const prompt = agent.buildPrompt(context, transcript);
+      let raw = await callClaude([{role:'user', content: prompt}], agent.maxTokens);
+      clearNote();
+
+      let displayText = raw;
+      let scores = null;
+      if (agent.key === 'synthesis') {
+        const m = raw.match(/SCORES:\s*(\{[^}]*\})\s*$/);
+        if (m) {
+          try { scores = JSON.parse(m[1]); } catch(e) { scores = null; }
+          displayText = raw.slice(0, m.index).trim();
+        }
+      }
+
+      transcript[agent.key] = displayText;
+      transcriptParts.push(`## ${agent.label}\n${displayText}`);
+
+      out.insertAdjacentHTML('beforeend', `<div class="agent-response ${agent.cls}" style="margin-bottom:14px">
+        <div class="agent-response-header"><span>${agent.icon}</span> ${agent.label}</div>
+        <div class="agent-response-body">${formatMarkdown(displayText)}</div>
+      </div>`);
+
+      if (scores) {
+        animateGauge(1, clamp0to100(scores.ps), 'var(--violet-bright)');
+        animateGauge(2, clamp0to100(scores.jp), 'var(--teal-bright)');
+        animateGauge(3, clamp0to100(scores.gc), 'var(--amber)');
+        animateGauge(4, clamp0to100(scores.pr), '#fb7185');
+      }
+    }
+
+    comprehensiveAnalysisText = transcriptParts.join('\n\n');
+
+    // If Synthesis wasn't in the active roster, no agent produced numeric
+    // scores above — get a real (non-random) score from a dedicated call
+    // instead of faking it, so the gauges never show fabricated numbers.
+    if (!activeAgents.has('synthesis')) {
+      await estimateFitScores(context);
+    }
+
+    toast(pipeline.length > 1 ? 'Council deliberation complete' : 'Analysis complete', 'success');
+
+  } catch(err) {
+    out.insertAdjacentHTML('beforeend', `<div style="color:#fb7185;padding:16px;background:var(--rose-glow);border-radius:10px;border:1px solid rgba(244,63,94,0.2)">⚠ ${err.message}</div>`);
+    toast('Analysis failed', 'error');
+  } finally {
+    btn.disabled = false; spin.style.display='none';
+  }
+}
+
+function clamp0to100(n) {
+  n = Number(n);
+  if (isNaN(n)) return 50;
+  return Math.max(0, Math.min(100, Math.round(n)));
+}
+
+// Dedicated real scoring call — used whenever no agent in the run already
+// produced grounded numeric scores. Never falls back to randomness; if the
+// call fails, gauges simply stay unset rather than showing a fake number.
+async function estimateFitScores(context) {
+  try {
+    const r = await callClaude([{role:'user',content:`Assess value-customer fit for this Value Proposition Canvas (${selectedModel} model).\n\n${context}\n\nScore each 0-100: problem_solution_fit, job_product_alignment, gain_creator_match, pain_reliever_match. Return JSON only, no markdown: {"ps":N,"jp":N,"gc":N,"pr":N}`}], 200);
+    const j = JSON.parse(r.replace(/```json|```/g,'').trim());
+    animateGauge(1, clamp0to100(j.ps), 'var(--violet-bright)');
+    animateGauge(2, clamp0to100(j.jp), 'var(--teal-bright)');
+    animateGauge(3, clamp0to100(j.gc), 'var(--amber)');
+    animateGauge(4, clamp0to100(j.pr), '#fb7185');
+  } catch(e) { /* leave gauges as-is rather than fabricate a score */ }
+}
+
+// ── FIT ANALYSIS ──
+async function runFitAnalysis() {
+  const filled = BLOCKS.filter(b => canvasData[b].trim());
+  if (filled.length < 2) { toast('Fill more sections to run fit analysis', 'error'); return; }
+  toast('Running fit scoring...', 'info');
+
+  const context = filled.map(b => `${b}: ${canvasData[b]}`).join('; ');
+  try {
+    await estimateFitScores(context);
+    toast('Fit scored', 'success');
+  } catch(e) {
+    toast('Fit scoring failed — try again', 'error');
+  }
+}
+
+function animateGauge(n, val, color) {
+  document.getElementById('g'+n).style.width = val+'%';
+  document.getElementById('g'+n+'v').textContent = val+'%';
+}
+
+// ── PRODUCT-MARKET FIT MODULE ──
+// This is the one place that pulls together everything the workshop has
+// produced — canvas text, per-block agent verdicts, the full council
+// transcript, and live participant signals (insight wall + polls) — so the
+// PMF read is grounded in the whole session, not just whatever's on screen.
+const PMF_POLL_META = [
+  { q: 'How clear is the customer pain point currently defined?', opts: ['Crystal clear','Somewhat clear','Needs work','Very unclear'] },
+  { q: 'How strong is our differentiation from existing solutions?', opts: ['Clearly differentiated','Somewhat different','Similar to competitors','Not differentiated'] },
+  { q: 'What is the biggest risk to this value proposition?', opts: ['Market timing','Customer adoption','Competition','Regulatory / compliance'] }
+];
+
+function buildPMFContext() {
+  const filled = BLOCKS.filter(b => canvasData[b].trim());
+
+  const canvasPart = filled
+    .map(b => `${BLOCK_NAMES[b]}: ${trimForChain(canvasData[b], 500)}`)
+    .join('\n');
+
+  const analysisPart = BLOCKS.filter(b => blockAnalyses[b] && blockAnalyses[b].trim())
+    .map(b => `${BLOCK_NAMES[b]} — prior agent analysis: ${trimForChain(blockAnalyses[b], 400)}`)
+    .join('\n');
+
+  const councilPart = comprehensiveAnalysisText
+    ? `Full multi-agent council deliberation (Socrates → Strategist → Devil's Advocate → Market Intel → VC Diligence → Synthesis):\n${trimForChain(comprehensiveAnalysisText, 3000)}`
+    : '';
+
+  const insightsPart = insights.length
+    ? `Workshop insight wall (${insights.length} items posted live by participants):\n` +
+      insights.map(i => `[${i.cat}, ${i.votes} votes] ${i.text}`).join('\n')
+    : '';
+
+  const pollPart = [1,2,3].map(p => {
+    const total = pollVotes[p].reduce((a,b)=>a+b,0);
+    if (!total) return '';
+    const meta = PMF_POLL_META[p-1];
+    const dist = pollVotes[p].map((v,i) => `${meta.opts[i]}: ${Math.round(v/total*100)}%`).join(', ');
+    return `Poll — "${meta.q}" → ${dist} (${total} votes)`;
+  }).filter(Boolean).join('\n');
+
+  const text = [
+    `Business model: ${selectedModel}`,
+    canvasPart && `CANVAS SECTIONS:\n${canvasPart}`,
+    analysisPart && `AGENT BLOCK ANALYSES:\n${analysisPart}`,
+    councilPart,
+    insightsPart,
+    pollPart && `LIVE WORKSHOP POLLS:\n${pollPart}`
+  ].filter(Boolean).join('\n\n');
+
+  const nAnalyses = BLOCKS.filter(b => blockAnalyses[b] && blockAnalyses[b].trim()).length;
+  return { filled, text, nAnalyses };
+}
+
+function pmfTier(score) {
+  if (score >= 75) return { cls: 'pmf-tier-strong', color: 'var(--teal-bright)' };
+  if (score >= 55) return { cls: 'pmf-tier-emerging', color: 'var(--sky)' };
+  if (score >= 35) return { cls: 'pmf-tier-early', color: 'var(--amber)' };
+  return { cls: 'pmf-tier-none', color: '#fb7185' };
+}
+
+const PMF_CIRC = 2 * Math.PI * 70;
+const PMF_SUB_LABELS = {
+  desirability: 'Desirability', differentiation: 'Differentiation',
+  business_model_fit: 'Business Model Fit', evidence_strength: 'Evidence Strength',
+  validation_readiness: 'Validation Readiness'
+};
+
+function renderPMF(j) {
+  document.getElementById('pmf-body').style.display = 'grid';
+  const score = clamp0to100(j.score);
+  const tier = pmfTier(score);
+
+  const ring = document.getElementById('pmf-ring-fill');
+  ring.style.stroke = tier.color;
+  ring.style.strokeDasharray = `${PMF_CIRC}`;
+  ring.style.strokeDashoffset = `${PMF_CIRC}`;
+  requestAnimationFrame(() => { ring.style.strokeDashoffset = `${PMF_CIRC * (1 - score/100)}`; });
+
+  const scoreEl = document.getElementById('pmf-score');
+  scoreEl.textContent = score;
+  scoreEl.style.color = tier.color;
+
+  const verdictEl = document.getElementById('pmf-verdict');
+  verdictEl.textContent = j.verdict || '—';
+  verdictEl.className = 'pmf-verdict-badge ' + tier.cls;
+
+  const subEl = document.getElementById('pmf-subscores');
+  subEl.innerHTML = Object.keys(PMF_SUB_LABELS).map(k => {
+    const v = clamp0to100(j.subscores && j.subscores[k]);
+    return `<div class="pmf-subscore">
+      <div class="pmf-subscore-label">${PMF_SUB_LABELS[k]}</div>
+      <div class="gauge-bar"><div class="gauge-fill" style="width:${v}%;background:${tier.color}"></div></div>
+      <div class="pmf-subscore-val">${v}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('pmf-narrative').textContent = j.narrative || '';
+  document.getElementById('pmf-strengths').innerHTML =
+    (j.strengths || []).map(s => `<li>${s}</li>`).join('') || '<li style="color:var(--text-3)">None identified</li>';
+  document.getElementById('pmf-risks').innerHTML =
+    (j.risks || []).map(s => `<li>${s}</li>`).join('') || '<li style="color:var(--text-3)">None identified</li>';
+  document.getElementById('pmf-actions').innerHTML =
+    (j.next_steps || []).map(s => `<li>${s}</li>`).join('') || '<li style="color:var(--text-3)">None suggested</li>';
+}
+
+async function runPMFAssessment() {
+  const { filled, text, nAnalyses } = buildPMFContext();
+  if (filled.length < 3) { toast('Fill at least 3 canvas sections before assessing PMF', 'error'); return; }
+
+  const btn = document.getElementById('pmf-run-btn');
+  const spin = document.getElementById('pmf-spin');
+  const sourcesEl = document.getElementById('pmf-sources');
+  btn.disabled = true; spin.style.display = 'inline-block';
+  sourcesEl.innerHTML = `Assessing from ${filled.length}/6 canvas sections` +
+    (nAnalyses ? `, ${nAnalyses} block ${nAnalyses===1?'analysis':'analyses'}` : '') +
+    (comprehensiveAnalysisText ? ', full council synthesis' : '') +
+    (insights.length ? `, ${insights.length} workshop ${insights.length===1?'insight':'insights'}` : '') +
+    (pollVotes[1].concat(pollVotes[2],pollVotes[3]).some(v=>v>0) ? ', live poll results' : '') + '…';
+
+  try {
+    const prompt = `You are the Synthesis Director giving the definitive Product-Market Fit verdict for a ${selectedModel} business, at the end of a full strategic workshop. Below is everything gathered in this session: the Value Proposition Canvas itself, prior AI agent critiques of individual sections, a full multi-agent council deliberation (Socratic questioning, Strategist, Devil's Advocate, Market Intel, VC Diligence), and live workshop signals from participants (insight wall + polls where present).
+
+${text}
+
+Weigh evidence over assertion. If a claim in the canvas isn't backed up anywhere in the agent analyses or council deliberation, treat it as unvalidated, not true. Where workshop insights or poll results contradict the canvas, say so explicitly in the narrative.
+
+Score product-market fit 0-100 on these five dimensions:
+- desirability: is the customer problem real, specific and evidenced (not assumed)?
+- differentiation: is the value proposition meaningfully distinct from alternatives?
+- business_model_fit: does the ${selectedModel} model naturally deliver and monetize this value?
+- evidence_strength: how much of this is backed by real evidence vs founder assertion?
+- validation_readiness: how ready is this to be tested with real customers right now?
+
+Also give an overall product-market fit score 0-100 — weighted by how severe the worst gap is, not a plain average — and a short verdict label (2-4 words, e.g. "No Fit Yet", "Early Signal", "Emerging Fit", "Strong Fit").
+
+Return JSON only, no markdown, no preamble, in exactly this shape:
+{"score":N,"verdict":"...","subscores":{"desirability":N,"differentiation":N,"business_model_fit":N,"evidence_strength":N,"validation_readiness":N},"narrative":"2-3 sentence honest overall read","strengths":["...","...","..."],"risks":["...","...","..."],"next_steps":["...","...","..."]}
+
+Keep narrative under 70 words. Each strength/risk/next_step under 18 words, 3-4 items each.`;
+
+    const raw = await callClaude([{role:'user', content: prompt}], 900);
+    const cleaned = raw.replace(/```json|```/g,'').trim();
+    const j = JSON.parse(cleaned);
+    pmfResult = j;
+    renderPMF(j);
+    sourcesEl.textContent = `Last assessed ${new Date().toLocaleTimeString()} · ${filled.length}/6 canvas sections` +
+      (nAnalyses ? ` · ${nAnalyses} block ${nAnalyses===1?'analysis':'analyses'}` : '') +
+      (comprehensiveAnalysisText ? ' · council synthesis' : '') +
+      (insights.length ? ` · ${insights.length} insights` : '');
+    toast('Product-Market Fit assessed', 'success');
+  } catch (e) {
+    sourcesEl.innerHTML = `<span style="color:#fb7185">⚠ Assessment failed — ${e.message}. Try again.</span>`;
+    toast('PMF assessment failed', 'error');
+  } finally {
+    btn.disabled = false; spin.style.display = 'none';
+  }
+}
+
+// ── HELPERS ──
+function formatMarkdown(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/`(.*?)`/g, '<code>$1</code>')
+    .replace(/^#{1,4}\s+(.+)$/gm, '<h4>$1</h4>')
+    .replace(/^[-•]\s+(.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>');
+}
+
+function insertQuestion(el, block) {
+  const q = el.textContent;
+  const ta = document.getElementById('inp-'+block);
+  ta.value = (ta.value ? ta.value+'\n\n→ '+q : '→ '+q);
+  onInput(block);
+  toast('Question added to field', 'success');
+}
+
+function clearBlock(block, skipConfirm) {
+  if (!skipConfirm && !confirm('Clear this section?')) return;
+  document.getElementById('inp-'+block).value = '';
+  canvasData[block] = '';
+  blockAnalyses[block] = '';
+  document.getElementById('out-'+block).classList.remove('show');
+  document.getElementById('out-'+block).innerHTML = '';
+  document.getElementById('chip-'+block).className = 'status-chip chip-empty';
+  document.getElementById('chip-'+block).textContent = 'Empty';
+  document.getElementById('blk-'+block).classList.remove('has-content','analyzed');
+  document.getElementById(PI_MAP[block]).className = 'prog-item';
+  updateProgress();
+  if (!skipConfirm) toast('Section cleared', 'success');
+}
+
+function clearAll() {
+  if (!confirm('Clear the entire canvas? This cannot be undone.')) return;
+  BLOCKS.forEach(b => clearBlock(b, true));
+  comprehensiveAnalysisText = '';
+  document.getElementById('comprehensive-out').classList.remove('show');
+  document.getElementById('comprehensive-out').innerHTML = '';
+  [1,2,3,4].forEach(n => { document.getElementById('g'+n).style.width='0%'; document.getElementById('g'+n+'v').textContent='—'; });
+  pmfResult = null;
+  document.getElementById('pmf-body').style.display = 'none';
+  document.getElementById('pmf-sources').textContent = 'Fill in at least 3 canvas sections — and ideally run agent analysis or Deploy All Agents first — to unlock a grounded PMF verdict.';
+  if (workshopTimer) { clearInterval(workshopTimer); workshopTimer = null; }
+  try { localStorage.removeItem(LOCAL_SAVE_KEY); } catch (e) {}
+  toast('Canvas cleared', 'success');
+}
+
+// ── FILE DOWNLOADS (plain browser download — this is a real website now,
+// not a sandboxed published page, so a direct anchor click works) ──
+function saveFile(filename, data) {
+  try {
+    const url = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return true;
+  } catch (e) {
+    toast('Save failed — try again', 'error');
+    return false;
+  }
+}
+
+async function saveProject() {
+  const data = { model: selectedModel, canvas: canvasData, ts: Date.now() };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  if (await saveFile(`canvas-${selectedModel}-${Date.now()}.json`, blob)) {
+    toast('Project saved', 'success');
+  }
+}
+
+function loadProject() {
+  const inp = Object.assign(document.createElement('input'), {type:'file', accept:'.json'});
+  inp.onchange = e => {
+    const r = new FileReader();
+    r.onload = ev => {
+      try {
+        const d = JSON.parse(ev.target.result);
+        selectedModel = d.model || 'subscription';
+        canvasData = d.canvas || canvasData;
+        BLOCKS.forEach(b => {
+          if (canvasData[b]) {
+            document.getElementById('inp-'+b).value = canvasData[b];
+            onInput(b);
+          }
+        });
+        toast('Project loaded', 'success');
+      } catch(err) { toast('Load failed', 'error'); }
+    };
+    r.readAsText(e.target.files[0]);
+  };
+  inp.click();
+}
+
+async function exportFull() {
+  const blockNames = {
+    products:'Products & Services','gains-creators':'Gain Creators',
+    'pain-relievers':'Pain Relievers',jobs:'Customer Jobs',gains:'Customer Gains',pains:'Customer Pains'
+  };
+  const sectionColors = {
+    products:'#8b5cf6','gains-creators':'#a78bfa','pain-relievers':'#f43f5e',
+    jobs:'#14b8a6',gains:'#f59e0b',pains:'#38bdf8'
+  };
+
+  // Gather canvas inputs
+  const inputSections = BLOCKS.filter(b=>canvasData[b].trim()).map(b=>`
+    <div class="canvas-section" style="border-left-color:${sectionColors[b]}">
+      <div class="section-label" style="color:${sectionColors[b]}">${blockNames[b]}</div>
+      <div class="section-content">${canvasData[b].replace(/\n/g,'<br>')}</div>
+      ${blockAnalyses[b] ? `<div class="analysis-box"><div class="analysis-label">Agent Analysis</div><div class="analysis-content">${blockAnalyses[b].replace(/\n/g,'<br>')}</div></div>` : ''}
+    </div>`).join('');
+
+  // Comprehensive analysis — strip HTML tags for clean text
+  const compEl = document.getElementById('comprehensive-out');
+  const compHtml = compEl && compEl.innerHTML ? compEl.innerHTML : '';
+  const compText = comprehensiveAnalysisText
+    ? comprehensiveAnalysisText.replace(/\n/g,'<br>')
+    : (compHtml ? '<p>See HTML sections above — run analysis for formatted output.</p>' : '<p><em>No comprehensive analysis run yet.</em></p>');
+
+  // Gauge values
+  const gaugeLabels = ['Problem–Solution Fit','Job–Product Alignment','Gain–Creator Match','Pain–Reliever Match'];
+  const gaugeVals = [1,2,3,4].map(n => document.getElementById('g'+n+'v').textContent);
+  const gaugeHtml = gaugeVals[0]==='—' ? '' : gaugeLabels.map((l,i)=>`
+    <div class="gauge-row"><span class="gauge-name">${l}</span><span class="gauge-score">${gaugeVals[i]}</span></div>`).join('');
+
+  // Product-Market Fit verdict
+  const pmfSubLabels = { desirability:'Desirability', differentiation:'Differentiation',
+    business_model_fit:'Business Model Fit', evidence_strength:'Evidence Strength', validation_readiness:'Validation Readiness' };
+  const pmfHtml = pmfResult ? `
+    <div class="comp-section" style="border-color:rgba(20,184,166,0.25);margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+        <div style="font-family:'Playfair Display',serif;font-size:2em;font-weight:700;color:#2dd4bf">${clamp0to100(pmfResult.score)}<span style="font-size:0.4em;color:#5c6380">/100</span></div>
+        <div style="font-size:0.85em;font-weight:600;color:#e8eaf2;padding:6px 14px;border:1px solid rgba(20,184,166,0.3);border-radius:50px;background:rgba(20,184,166,0.1)">${pmfResult.verdict||''}</div>
+      </div>
+      <div class="comp-content" style="margin-bottom:16px">${(pmfResult.narrative||'').replace(/\n/g,'<br>')}</div>
+      <div class="fit-grid">
+        ${Object.keys(pmfSubLabels).map(k=>`<div class="gauge-row"><span class="gauge-name">${pmfSubLabels[k]}</span><span class="gauge-score">${clamp0to100(pmfResult.subscores && pmfResult.subscores[k])}</span></div>`).join('')}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+        <div><div class="analysis-label" style="color:#2dd4bf">Strongest Signals</div><ul style="padding-left:18px;color:#9ca3bc;font-size:0.85em;line-height:1.8">${(pmfResult.strengths||[]).map(s=>`<li>${s}</li>`).join('')}</ul></div>
+        <div><div class="analysis-label" style="color:#fb7185">Biggest Gaps</div><ul style="padding-left:18px;color:#9ca3bc;font-size:0.85em;line-height:1.8">${(pmfResult.risks||[]).map(s=>`<li>${s}</li>`).join('')}</ul></div>
+      </div>
+      <div style="margin-top:16px"><div class="analysis-label" style="color:#a78bfa">Next Validation Steps</div><ol style="padding-left:18px;color:#9ca3bc;font-size:0.85em;line-height:1.8">${(pmfResult.next_steps||[]).map(s=>`<li>${s}</li>`).join('')}</ol></div>
+    </div>` : '<p style="color:#5c6380;font-style:italic">Run the Product-Market Fit assessment to include a verdict here.</p>';
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Strategic Canvas Report — ${selectedModel} — ${new Date().toLocaleDateString()}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap');
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',system-ui,sans-serif; background:#0a0b0f; color:#e8eaf2; min-height:100vh; }
+  .page { max-width:960px; margin:0 auto; padding:48px 32px; }
+  .report-header { margin-bottom:48px; padding-bottom:24px; border-bottom:1px solid rgba(255,255,255,0.08); }
+  .report-title { font-family:'Playfair Display',serif; font-size:2.4em; font-weight:700;
+    background:linear-gradient(90deg,#a78bfa,#2dd4bf); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px; }
+  .report-meta { font-size:0.85em; color:#5c6380; }
+  .report-meta span { color:#9ca3bc; }
+  h2 { font-family:'Playfair Display',serif; font-size:1.3em; color:#a78bfa; margin:40px 0 16px; padding-bottom:8px; border-bottom:1px solid rgba(139,92,246,0.2); }
+  .canvas-section { margin:16px 0; padding:20px 24px; background:#12141a; border-radius:12px; border-left:4px solid #8b5cf6; }
+  .section-label { font-size:0.72em; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px; }
+  .section-content { font-size:0.9em; color:#9ca3bc; line-height:1.8; }
+  .analysis-box { margin-top:14px; padding:14px; background:#1a1d26; border-radius:8px; border:1px solid rgba(255,255,255,0.06); }
+  .analysis-label { font-size:0.7em; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#5c6380; margin-bottom:8px; }
+  .analysis-content { font-size:0.85em; color:#9ca3bc; line-height:1.75; }
+  .fit-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+  .gauge-row { background:#12141a; border-radius:8px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; }
+  .gauge-name { font-size:0.85em; color:#9ca3bc; }
+  .gauge-score { font-size:1.1em; font-weight:700; color:#a78bfa; }
+  .comp-section { background:#12141a; border-radius:12px; padding:24px; border:1px solid rgba(139,92,246,0.15); }
+  .comp-content { font-size:0.88em; color:#9ca3bc; line-height:1.8; }
+  .comp-content strong { color:#e8eaf2; }
+  .footer { margin-top:56px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.06); text-align:center; font-size:0.8em; color:#5c6380; }
+  .footer span { color:#a78bfa; }
+  @media print { body{background:white;color:#1f2937} .canvas-section,.analysis-box,.gauge-row,.comp-section{background:#f9fafb;border-color:#e5e7eb} .report-title{-webkit-text-fill-color:#4c1d95} h2{color:#4c1d95} }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="report-header">
+    <div class="report-title">Strategic Intelligence Canvas</div>
+    <div class="report-meta">
+      Business Model: <span>${selectedModel.charAt(0).toUpperCase()+selectedModel.slice(1)}</span> &nbsp;·&nbsp;
+      Generated: <span>${new Date().toLocaleString()}</span> &nbsp;·&nbsp;
+      Sections filled: <span>${BLOCKS.filter(b=>canvasData[b].trim()).length} / 6</span>
+    </div>
+  </div>
+
+  <h2>Canvas Inputs &amp; Block Analyses</h2>
+  ${inputSections || '<p style="color:#5c6380;font-style:italic">No sections filled yet.</p>'}
+
+  ${gaugeHtml ? `<h2>Value–Customer Fit Scores</h2><div class="fit-grid">${gaugeHtml}</div>` : ''}
+
+  <h2>Product-Market Fit Verdict</h2>
+  ${pmfHtml}
+
+  <h2>Comprehensive Multi-Agent Analysis</h2>
+  <div class="comp-section">
+    <div class="comp-content">${compText}</div>
+  </div>
+
+  <div class="footer">
+    <span>Karllestone Capital</span> · Strategic Intelligence Canvas · Confidential
+  </div>
+</div>
+</body>
+</html>`;
+
+  if (await saveFile(`strategic-canvas-${selectedModel}-${Date.now()}.html`, new Blob([html],{type:'text/html'}))) {
+    toast('Report exported successfully', 'success');
+  }
+}
+
+// ── WORKSHOP FACILITATION ──
+
+// Workshop phases definition
+const WK_PHASES = [
+  { name:'Check-In', dur:'5 min', goal:'Align the group, set intentions, establish psychological safety', time:300 },
+  { name:'Customer Segment', dur:'15 min', goal:'Define Jobs, Gains and Pains of the target customer segment', time:900 },
+  { name:'Value Proposition', dur:'15 min', goal:'Map Products/Services, Pain Relievers and Gain Creators', time:900 },
+  { name:'Fit Analysis', dur:'10 min', goal:'Identify matches and gaps between VP and CS sides', time:600 },
+  { name:'Agent Analysis', dur:'10 min', goal:'Run multi-agent AI review and critique the canvas together', time:600 },
+  { name:'Synthesis', dur:'10 min', goal:'Define top assumptions, actions and owners before closing', time:600 },
+];
+
+let timerDuration = 900;
+let timerRemaining = 900;
+let timerInterval = null;
+
+// Render phases
+function renderPhases() {
+  const track = document.getElementById('phase-track');
+  track.innerHTML = WK_PHASES.map((p,i) => `
+    <div class="phase-card ${i===workshopPhaseIdx?'active-phase':''} ${i<workshopPhaseIdx?'done-phase':''}"
+         onclick="selectPhase(${i})">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="phase-num">${i<workshopPhaseIdx?'✓':(i+1)}</div>
+        <div>
+          <div class="phase-name">${p.name}</div>
+          <div class="phase-dur">${p.dur}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function selectPhase(idx) {
+  workshopPhaseIdx = idx;
+  const p = WK_PHASES[idx];
+  document.getElementById('current-phase-name').textContent = `Phase ${idx+1}: ${p.name}`;
+  document.getElementById('current-phase-goal').textContent = p.goal;
+  setTimerPreset(p.time, null);
+  renderPhases();
+}
+
+function nextPhase() {
+  if (workshopPhaseIdx < WK_PHASES.length-1) {
+    selectPhase(workshopPhaseIdx+1);
+    resetTimer();
+    toast(`→ Phase ${workshopPhaseIdx+1}: ${WK_PHASES[workshopPhaseIdx].name}`, 'info');
+  } else {
+    toast('Workshop complete! Run synthesis & export.', 'success');
+  }
+}
+
+function setTimerPreset(secs, btn) {
+  timerDuration = secs; timerRemaining = secs;
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active-preset'));
+  if (btn) btn.classList.add('active-preset');
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const m = String(Math.floor(timerRemaining/60)).padStart(2,'0');
+  const s = String(timerRemaining%60).padStart(2,'0');
+  const el = document.getElementById('timer-display');
+  el.textContent = `${m}:${s}`;
+  el.className = 'timer-display' + (timerRemaining <= 60 && timerRemaining > 0 ? ' warning' : '');
+}
+
+function toggleTimer() {
+  const btn = document.getElementById('timer-start-btn');
+  if (timerInterval) {
+    clearInterval(timerInterval); timerInterval = null;
+    workshopTimer = null;
+    btn.textContent = '▶ Resume';
+  } else {
+    if (timerRemaining <= 0) { timerRemaining = timerDuration; }
+    timerInterval = setInterval(() => {
+      timerRemaining--;
+      updateTimerDisplay();
+      if (timerRemaining <= 0) {
+        clearInterval(timerInterval); timerInterval = null; workshopTimer = null;
+        btn.textContent = '▶ Start';
+        toast('⏱ Time is up!', 'info');
+        document.getElementById('timer-display').textContent = '00:00';
+      }
+    }, 1000);
+    workshopTimer = timerInterval;
+    btn.textContent = '⏸ Pause';
+  }
+}
+
+function resetTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; workshopTimer = null; }
+  timerRemaining = timerDuration;
+  document.getElementById('timer-start-btn').textContent = '▶ Start';
+  updateTimerDisplay();
+}
+
+// Workshop tabs
+function wkTab(panel, btn) {
+  document.querySelectorAll('.wk-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.wk-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('wk-'+panel).classList.add('active');
+}
+
+async function runFacilitator() {
+  const action = document.getElementById('facilitator-action').value;
+  const customText = document.getElementById('custom-fac-prompt').value;
+  const out = document.getElementById('fac-out');
+  const spin = document.getElementById('fac-spin');
+  spin.style.display = 'inline-block';
+  out.classList.remove('show'); out.innerHTML = '';
+
+  const filledBlocks = BLOCKS.filter(b=>canvasData[b].trim());
+  const emptyBlocks = BLOCKS.filter(b=>!canvasData[b].trim());
+  const canvasContext = filledBlocks.length
+    ? filledBlocks.map(b=>`${BLOCK_NAMES[b]}: ${canvasData[b]}`).join(' | ') + (emptyBlocks.length ? ` (still empty: ${emptyBlocks.map(b=>BLOCK_NAMES[b]).join(', ')})` : '')
+    : 'Canvas not yet filled';
+
+  const currentPhase = WK_PHASES[workshopPhaseIdx];
+
+  const actionPrompts = {
+    energize: `You are a master workshop facilitator. Open the session with a single powerful, provocative question that will immediately engage the group on this canvas topic. Canvas context: ${canvasContext}. Current phase: ${currentPhase.name}. Make it thought-provoking, grounded in the content, and accessible to all participants.`,
+    stuck: `A workshop group is stuck and needs facilitation. Canvas: ${canvasContext}. Phase: ${currentPhase.name}. Provide: (1) A diagnosis of likely reasons they're stuck, (2) 3 specific facilitation moves to break the logjam, (3) A reframing question to shift perspective. Be concrete and actionable.`,
+    deepen: `The workshop group needs to go deeper on their canvas. Canvas: ${canvasContext}. Phase: ${currentPhase.name}. Generate 5 deepening questions that push past surface-level answers, challenge assumptions, and reveal hidden complexity. Each question should surface something the group hasn't yet considered.`,
+    challenge: `You are a direct, confident devil's advocate facilitator. Canvas: ${canvasContext}. Challenge the group directly: identify the 3 biggest logical gaps or unsupported claims in what they've written. Be specific, not generic. Name the exact assumption and explain why it's risky. Frame as questions.`,
+    synthesis: `Synthesize the workshop discussion so far. Canvas: ${canvasContext}. Phase: ${currentPhase.name}. Provide: (1) 3-sentence synthesis of where the group has landed, (2) Points of strong consensus, (3) Remaining tensions or open questions, (4) What needs to happen next in the session.`,
+    transition: `The group is transitioning to the next canvas section. Current canvas: ${canvasContext}. Current phase: ${currentPhase.name}. Write a crisp transition script: acknowledge what was accomplished, connect it to the next section, and frame the key question to drive the next discussion.`,
+    conflict: `There's productive disagreement in the group. Canvas: ${canvasContext}. Provide a facilitation script to: (1) Acknowledge both perspectives fairly, (2) Identify the underlying assumptions behind the disagreement, (3) Reframe as a shared problem to solve, (4) Suggest a way to test or resolve the tension.`,
+    closing: `Close the workshop. Canvas: ${canvasContext}. Facilitate a structured close: (1) Highlight the 3 most important insights from the canvas, (2) Name the top 2-3 assumptions that need validation, (3) Suggest 3 immediate next actions with clear owners, (4) Close with a reflection question that sustains momentum.`,
+    custom: customText || 'Help facilitate this workshop effectively.',
+  };
+
+  const prompt = actionPrompts[action] || actionPrompts.energize;
+
+  try {
+    const response = await callClaude([{role:'user',content:prompt}], 800);
+    out.innerHTML = `<div class="agent-response resp-socrates">
+      <div class="agent-response-header"><span>☿</span> AI Facilitator · ${document.getElementById('facilitator-action').options[document.getElementById('facilitator-action').selectedIndex].text}</div>
+      <div class="agent-response-body">${formatMarkdown(response)}</div>
+    </div>`;
+    out.classList.add('show');
+  } catch(e) {
+    out.innerHTML = `<div style="color:#fb7185;font-size:0.82em;padding:12px;background:var(--rose-glow);border-radius:8px">⚠ ${e.message}</div>`;
+    out.classList.add('show');
+  } finally {
+    spin.style.display = 'none';
+  }
+}
+
+// Quick facilitation moves
+async function quickFacilitate(type) {
+  const out = document.getElementById('quick-fac-out');
+  out.innerHTML = `<div style="display:flex;align-items:center;gap:8px;color:var(--text-3);font-size:0.82em;padding:10px"><span class="spin" style="display:inline-block;border-color:rgba(245,158,11,0.3);border-top-color:var(--amber)"></span> Preparing...</div>`;
+  out.classList.add('show');
+
+  const canvasSummary = BLOCKS.filter(b=>canvasData[b]).map(b=>BLOCK_NAMES[b]+': '+canvasData[b]).join('; ') || 'Canvas not yet filled';
+
+  const scripts = {
+    '1-2-4-all': `Explain the 1-2-4-All facilitation structure step-by-step for this specific value proposition canvas workshop. Canvas so far: ${canvasSummary}. Include: how to set it up, exact timing, what to do at each stage (1=individual, 2=pairs, 4=quads, all=plenary), and — grounded in what's actually on this canvas — the exact question to give participants and how to harvest insights.`,
+    'fist-five': `Explain how to run a Fist-to-Five check-in for this value proposition canvas workshop. Canvas so far: ${canvasSummary}. Propose a check-in question specific to the most contested or thinnest part of this canvas, explain how to interpret each level (0-5), what to do if there's divergence, and how to use the results to guide the session.`,
+    'think-pair': `Design a Think-Pair-Share exercise for this value proposition canvas context: ${canvasSummary}. Provide the exact thinking prompt, pair sharing instruction, and group sharing protocol.`,
+    'lean-coffee': `Design a Lean Coffee agenda for a value proposition workshop. List 5 prioritized discussion topics based on this canvas: ${canvasSummary}. Include setup instructions and time-boxing approach.`,
+    'hmw': `Reframe the key challenges in this canvas as "How Might We..." questions. Canvas: ${canvasSummary}. Generate 6 strong HMW questions that are neither too broad nor too narrow, and explain why each is useful for ideation.`,
+    'pre-mortem': `Design a Pre-Mortem exercise for this value proposition. Canvas: ${canvasSummary}. Imagine it's 18 months from now and this VP has failed. What happened? List the top 5 failure modes and the questions to ask today to prevent them.`,
+  };
+
+  try {
+    const response = await callClaude([{role:'user',content:scripts[type]}], 700);
+    out.innerHTML = `<div class="agent-response resp-strategist">
+      <div class="agent-response-header"><span>◈</span> Facilitation Move · ${type.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</div>
+      <div class="agent-response-body">${formatMarkdown(response)}</div>
+    </div>`;
+  } catch(e) {
+    out.innerHTML = `<div style="color:#fb7185;font-size:0.82em;padding:10px">⚠ ${e.message}</div>`;
+  }
+}
+
+// Insight Wall
+const insights = [];
+const insightEmojis = { insight:'💡', assumption:'⚠', question:'❓', action:'🎯', risk:'🔴' };
+
+function addInsight() {
+  const input = document.getElementById('insight-input');
+  const cat = document.getElementById('insight-category').value;
+  const text = input.value.trim();
+  if (!text) return;
+  insights.push({ text, cat, votes: 0, id: Date.now() });
+  input.value = '';
+  renderInsightWall();
+}
+
+function renderInsightWall() {
+  const wall = document.getElementById('insight-wall');
+  wall.innerHTML = insights.map((ins,i) => `
+    <div class="insight-sticky">
+      <button class="insight-del" onclick="removeInsight(${i})">✕</button>
+      <div style="font-size:0.75em;color:var(--amber);font-weight:600;margin-bottom:5px">${insightEmojis[ins.cat]} ${ins.cat.charAt(0).toUpperCase()+ins.cat.slice(1)}</div>
+      <div>${ins.text}</div>
+      <div class="insight-votes">
+        ${[0,1,2].map(d=>`<div class="dot-vote ${ins.votes>d?'active':''}" onclick="voteInsight(${i},${d+1})"></div>`).join('')}
+        <span class="dot-count">${ins.votes}</span>
+      </div>
+    </div>`).join('');
+}
+
+function removeInsight(i) { insights.splice(i,1); renderInsightWall(); }
+function voteInsight(idx, n) { insights[idx].votes = n; renderInsightWall(); }
+function clearInsights() { if(confirm('Clear insight wall?')){ insights.length=0; renderInsightWall(); document.getElementById('insight-out').classList.remove('show'); } }
+
+async function synthesizeInsights() {
+  if (!insights.length) { toast('Add insights first', 'error'); return; }
+  const spin = document.getElementById('insight-spin');
+  const out = document.getElementById('insight-out');
+  spin.style.display='inline-block';
+  out.classList.remove('show');
+
+  const insightText = insights.map(i=>`[${i.cat}] ${i.text} (votes:${i.votes})`).join('\n');
+  const canvasSummary = BLOCKS.filter(b=>canvasData[b].trim()).map(b=>BLOCK_NAMES[b]+': '+canvasData[b]).join(' | ') || 'Canvas not yet filled';
+  try {
+    const response = await callClaude([{role:'user',content:`You are a synthesis facilitator. Participants in a value proposition canvas workshop have posted these insights on the insight wall:\n${insightText}\n\nFor reference, the canvas itself so far: ${canvasSummary}\n\nSynthesize the insights into: (1) 3 key themes, (2) The most critical assumption to validate, (3) Top 2 action items, (4) One big open question remaining. Where an insight directly connects to or contradicts something on the canvas, say so explicitly. Be concise and use the insight categories to guide your synthesis.`}], 700);
+    out.innerHTML = `<div class="agent-response resp-synthesis">
+      <div class="agent-response-header"><span>⬡</span> Synthesis Director · Insight Wall Summary</div>
+      <div class="agent-response-body">${formatMarkdown(response)}</div>
+    </div>`;
+    out.classList.add('show');
+  } catch(e) {
+    out.innerHTML = `<div style="color:#fb7185;font-size:0.82em;padding:10px">⚠ ${e.message}</div>`;
+    out.classList.add('show');
+  } finally { spin.style.display='none'; }
+}
+
+// Polling
+const pollVotes = {1:[0,0,0,0],2:[0,0,0,0],3:[0,0,0,0]};
+const pollVoted = {1:false,2:false,3:false};
+
+function vote(poll, option) {
+  if (pollVoted[poll]) {
+    // Allow re-vote: subtract old, add new
+    const opts = document.querySelectorAll(`#poll-${poll}-opts .poll-option`);
+    opts.forEach((o,i)=>{ if(o.classList.contains('voted')){ pollVotes[poll][i]--; o.classList.remove('voted'); } });
+  }
+  pollVotes[poll][option]++;
+  pollVoted[poll] = true;
+  document.querySelectorAll(`#poll-${poll}-opts .poll-option`)[option].classList.add('voted');
+  updatePollDisplay(poll);
+}
+
+function updatePollDisplay(poll) {
+  const total = pollVotes[poll].reduce((a,b)=>a+b,0) || 1;
+  pollVotes[poll].forEach((v,i) => {
+    document.getElementById(`pb-${poll}-${i}`).style.width = Math.round(v/total*100)+'%';
+    document.getElementById(`pv-${poll}-${i}`).textContent = v;
+  });
+}
+
+function resetPolls() {
+  [1,2,3].forEach(p => {
+    pollVotes[p]=[0,0,0,0]; pollVoted[p]=false;
+    [0,1,2,3].forEach(i=>{
+      document.getElementById(`pb-${p}-${i}`).style.width='0%';
+      document.getElementById(`pv-${p}-${i}`).textContent='0';
+    });
+    document.querySelectorAll(`#poll-${p}-opts .poll-option`).forEach(o=>o.classList.remove('voted'));
+  });
+  toast('Polls reset', 'success');
+}
+
+// Init
+restoreLocal();
+renderPhases();
+document.getElementById('facilitator-action').addEventListener('change', function() {
+  document.getElementById('custom-prompt-wrap').style.display = this.value==='custom' ? 'block' : 'none';
+});
+
+function showGuide() { document.getElementById('guide-modal').classList.add('show'); }
+function closeGuide(e) { if(e.target===document.getElementById('guide-modal')) document.getElementById('guide-modal').classList.remove('show'); }
+
+// ── TOAST ──
+function toast(msg, type='success') {
+  const wrap = document.getElementById('toasts');
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => { el.style.transition='opacity 0.3s'; el.style.opacity='0'; setTimeout(()=>el.remove(),300); }, 3000);
+}
+</script>
+</body>
+</html>
