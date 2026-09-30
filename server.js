@@ -64,8 +64,13 @@ app.post('/api/agent', async (req, res) => {
     });
 
     if (!upstream.ok) {
+      if (upstream.status === 401) {
+        console.error('Anthropic API rejected the configured ANTHROPIC_API_KEY (401)');
+        return res.status(500).json({ error: 'The server\'s Anthropic API key is invalid — check ANTHROPIC_API_KEY.' });
+      }
       const status = upstream.status === 429 ? 429 : 502;
-      return res.status(status).json({ error: 'A temporary error occurred — please try again.' });
+      const msg = status === 429 ? 'Too many requests — wait a moment and try again.' : 'A temporary error occurred — please try again.';
+      return res.status(status).json({ error: msg });
     }
 
     const data = await upstream.json();
